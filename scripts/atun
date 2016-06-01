@@ -1,0 +1,8 @@
+#!/bin/bash
+# TODO:
+# install ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
+# try putting this in crontab with @reboot as the first param
+# autossh -f forks to background
+sleep 30
+#/usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i ~/.ssh/mikeallred1.pem ubuntu@mikeallred.net
+/usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i $PATH_PEM ubuntu@mikeallred.net

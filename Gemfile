@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
-require 'rubygems'
-require 'bundler/setup'
+
+gem 'wpa_cli_ruby'

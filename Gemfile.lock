@@ -1,11 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    wpa_cli_ruby (0.0.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  wpa_cli_ruby
 
 BUNDLED WITH
-   1.12.4
+   1.12.5

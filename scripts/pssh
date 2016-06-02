@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# chain ssh into a pi and become with proper env
+# add -v to ssh for debugging
+# also, debug with bash -x
+e = '\\\\\\'
+cmd = <<-eoc
+  ssh -t ubuntu@mikeallred.net ssh -t -p 2222 pi@localhost
+eoc
+puts cmd
+system cmd
+
+=begin
+cmd = <<-eoc
+  ssh -t user@gateway ssh -t subhost sudo -u wackuser bash -c #{e}'bash --init-file #{e}<#{e}(echo #{e}"set -o vi#{e};cd /opt/somewhere#{e};. ./loadenv.sh#{e};cd piloto#{e}"#{e})#{e}'
+eoc
+=end

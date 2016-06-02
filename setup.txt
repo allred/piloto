@@ -1,0 +1,8 @@
+# operations
+* drop in the priv key for the atun autossh tunnel 
+* setup rvm, bundler
+* add atun to a @reboot line in crontab
+* setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
+
+# dev
+* setup vim

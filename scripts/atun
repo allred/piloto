@@ -1,8 +1,21 @@
-#!/bin/bash
-# TODO:
-# install ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
-# try putting this in crontab with @reboot as the first param
+#!/usr/bin/env ruby
+# purpose: launches an autossh tunnel in a screen session to another host
+# put this script in crontab with @reboot as the first param
 # autossh -f forks to background
-sleep 30
-#/usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i ~/.ssh/mikeallred1.pem ubuntu@mikeallred.net
-/usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i $PATH_PEM ubuntu@mikeallred.net
+
+# sleep because autossh fails if there are no interfaces during boot
+until system "ping -c 1 google.com"
+  sleep 10
+end
+target_tunnel = "ubuntu@mikeallred.net"
+mailto = "mikejallred@gmail.com"
+cmd_tunnel = <<-eoc
+  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
+eoc
+
+system cmd_tunnel
+
+cmd_mail = <<-eoc
+  /sbin/iwconfig | mail -s "#{`hostname`} #{$0}" #{mailto}
+eoc
+system cmd_mail

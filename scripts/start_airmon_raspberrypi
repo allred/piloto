@@ -1,0 +1,4 @@
+#!/bin/bash
+nohup bash -c "ifdown wlan0;airmon-ng start wlan1;ifup wlan0"
+
+#/sbin/wpa_supplicant -s -B -P /var/run/wpa_supplicant.wlan0.pid -i wlan0 -W -D nl80211,wext -c /etc/wpa_supplicant/wpa_supplicant.conf; sudo dhclient wlan0

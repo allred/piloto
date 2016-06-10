@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # purpose: launches an autossh tunnel in a screen session to another host
-# put this script in crontab with @reboot as the first param
 # autossh -f forks to background
+# crontab entry could look like:
+# @reboot /path/to/atun >> /path/to/atun.log 2>&1
 
 # sleep because autossh fails if there are no interfaces during boot
 until system "ping -c 1 google.com"
@@ -16,6 +17,6 @@ eoc
 system cmd_tunnel
 
 cmd_mail = <<-eoc
-  /sbin/iwconfig | mail -s "#{`hostname`} #{$0}" #{mailto}
+  /sbin/iwconfig | mail --debug-level=9 -s "#{`hostname`} #{File.basename($0)} #{`/sbin/iwgetid -r`}" #{mailto}
 eoc
 system cmd_mail

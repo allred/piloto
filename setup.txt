@@ -3,6 +3,13 @@
 * setup rvm, bundler
 * add atun to a @reboot line in crontab
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
+* enable non-free in /etc/apt/sources.list
+* install firmware-realtek package
 
 # dev
+* http://www.howtogeek.com/167195/how-to-change-your-raspberry-pi-or-other-linux-devices-hostname/
 * setup vim
+* lsusb
+* iw dev # list devices
+* iw phy phy0 info # to see if an interface supports monitor mode
+* going to try the panda adapter http://www.amazon.com/Panda-300Mbps-Wireless-USB-Adapter/dp/B00EQT0YK2?tag=wireleshackt-20

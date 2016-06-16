@@ -13,3 +13,7 @@
 * iw dev # list devices
 * iw phy phy0 info # to see if an interface supports monitor mode
 * going to try the panda adapter http://www.amazon.com/Panda-300Mbps-Wireless-USB-Adapter/dp/B00EQT0YK2?tag=wireleshackt-20
+* /sys/class/leds/led0
+* https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=12530
+https://ngrok.com/
+https://localtunnel.me/

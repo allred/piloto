@@ -9,7 +9,7 @@ until system "ping -c 1 google.com"
   sleep 10
 end
 target_tunnel = "ubuntu@mikeallred.net"
-mailto = "mikejallred@gmail.com"
+mailto = ENV['MAILTO'] || "mikejallred@gmail.com"
 cmd_tunnel = <<-eoc
   /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
 eoc
@@ -17,6 +17,8 @@ eoc
 system cmd_tunnel
 
 cmd_mail = <<-eoc
-  /sbin/iwconfig | mail --debug-level=9 -s "#{`hostname`} #{File.basename($0)} #{`/sbin/iwgetid -r`}" #{mailto}
+  /sbin/iwconfig | mail --debug-level=2 -s "#{`hostname`} #{File.basename($0)} #{`/sbin/iwgetid -r`}" #{mailto}
 eoc
+# sleepin don't help ye, pausin won't do ye no good 
+sleep 30
 system cmd_mail

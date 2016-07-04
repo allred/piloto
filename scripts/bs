@@ -1,0 +1,2 @@
+#!/bin/bash
+cd ~/besside && sudo besside-ng mon0

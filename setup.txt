@@ -1,4 +1,8 @@
 # operations
+* packages:
+** libnl-3-dev
+** clone aircrack-ng
+** sudo make experimental=true install
 * drop in the priv key for the atun autossh tunnel 
 * setup rvm, bundler
 * add atun to a @reboot line in crontab

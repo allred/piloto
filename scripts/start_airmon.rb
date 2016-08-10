@@ -3,7 +3,7 @@
 # relies on the aircrack-ng package
 require 'open3'
 
-if_wlan = 'wlan0'
+if_wlan = ARGV[0] || 'wlan0'
 if_mon = 'mon0'
 dir_output = '/home/pi/besside'
 Dir.mkdir dir_output unless Dir.exists? dir_output
@@ -14,15 +14,17 @@ cmd_list_interfaces = 'ip link show | grep wlan'
 stdout_li, stderr_li, status_li = Open3.capture3(cmd_list_interfaces)
 stdout_li.split("\n").each do |l|
   m = /(wlan\d+)/.match(l)
-  puts [LINE: m[0]]
+  #puts [LINE: m[0]]
   interfaces_wlan.push(m[0])
 end
 cmd_ifdown = ''
 cmd_ifup = ''
 interfaces_wlan.each do |i|
   next if i == if_wlan
-  cmd_ifdown += "ifdown #{i};"
-  cmd_ifup += "ifup #{i};"
+  #cmd_ifdown += "ifdown #{i};"
+  cmd_ifdown += "ip link set dev #{i} down;"
+  #cmd_ifup += "ifup #{i};"
+  cmd_ifup += "ip link set dev #{i} up;"
 end
 puts [DEBUG: cmd_ifdown]
 cmd_airmon_start =<<-eoc

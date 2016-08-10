@@ -1,2 +1,3 @@
 #!/bin/bash
-cd ~/besside && sudo besside-ng mon0
+iface='wlan0mon'
+cd ~/besside && sudo besside-ng $iface 

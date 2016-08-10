@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# purpose: find devices that are capable of monitor mode
+require 'open3'
+
+def list_monitorable
+  cmd_iw_dev = <<-eoc
+    iw dev
+  eoc
+
+  devices_monitorable = []
+  Open3.popen3(cmd_iw_dev) do |stdin, stdout, stderr, wait_thr|
+    stdout.each do |line|
+      if /^(phy#\d+)/.match(line)
+        dev = $1.gsub('#', '')
+        cmd_iw_phy = <<-eoc
+          iw phy #{dev} info
+        eoc
+        stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
+        # TODO: don't push if this device is already in monitor mode
+        if /monitor/.match(stdout_iw_phy)
+          devices_monitorable.push(dev)
+        end
+      end
+    end
+    if wait_thr.value.to_i != 0
+      abort wait_thr.value
+    end
+  end
+  return devices_monitorable
+end
+puts [output: list_monitorable]
+

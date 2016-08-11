@@ -4,29 +4,26 @@ require 'open3'
 
 def list_monitorable
   cmd_iw_dev = <<-eoc
-    iw dev
+    iw dev 
   eoc
+    #iw list 
 
-  devices_monitorable = []
-  Open3.popen3(cmd_iw_dev) do |stdin, stdout, stderr, wait_thr|
-    stdout.each do |line|
-      if /^(phy#\d+)/.match(line)
-        dev = $1.gsub('#', '')
-        cmd_iw_phy = <<-eoc
-          iw phy #{dev} info
-        eoc
-        stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
-        # TODO: don't push if this device is already in monitor mode
-        if /monitor/.match(stdout_iw_phy)
-          devices_monitorable.push(dev)
-        end
-      end
-    end
-    if wait_thr.value.to_i != 0
-      abort wait_thr.value
+  devices_monitorable = {} 
+  stdout_iw_dev, status_iw_dev = Open3.capture2(cmd_iw_dev)
+  stdout_iw_dev.scan(/(phy#\d+).*?Interface\s+(\S+)/m) do |m|
+    dev = m[0].gsub!(/#/, '')
+    interface = m[1]
+    cmd_iw_phy = <<-eoc
+      iw phy #{dev} info
+    eoc
+    stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
+    if stdout_iw_phy.match(/monitor/m)
+      # TODO: don't include if this device is already in monitor mode
+      devices_monitorable[dev] = {
+        'interface': interface 
+      }
     end
   end
   return devices_monitorable
 end
 puts [output: list_monitorable]
-

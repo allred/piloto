@@ -8,7 +8,7 @@ def list_monitorable
   eoc
     #iw list 
 
-  devices_monitorable = {} 
+  devices_monitorable = []
   stdout_iw_dev, status_iw_dev = Open3.capture2(cmd_iw_dev)
   stdout_iw_dev.scan(/(phy#\d+).*?Interface\s+(\S+)/m) do |m|
     dev = m[0].gsub!(/#/, '')
@@ -19,11 +19,13 @@ def list_monitorable
     stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
     if stdout_iw_phy.match(/monitor/m)
       # TODO: don't include if this device is already in monitor mode
-      devices_monitorable[dev] = {
-        'interface': interface 
-      }
+      #devices_monitorable[dev] = {
+      #  'interface': interface 
+      #}
+      devices_monitorable.push(interface)
     end
   end
   return devices_monitorable
 end
-puts [output: list_monitorable]
+#puts [output: list_monitorable]
+puts list_monitorable

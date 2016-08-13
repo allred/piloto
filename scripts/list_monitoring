@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# purpose: list devices that are in monitor mode
+require 'open3'
+
+def list_monitoring
+  devices_monitoring = []
+  cmd_ifconfig = <<-eoc
+    ifconfig
+  eoc
+  stdout_ifconfig, status_ifconfig = Open3.capture2(cmd_ifconfig)
+  stdout_ifconfig.split("\n").each do |line|
+    if line.match(/^(\S*mon\S*)/)
+      devices_monitoring.push($1)
+    end
+  end
+  return devices_monitoring
+end
+puts list_monitoring

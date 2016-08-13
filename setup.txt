@@ -1,14 +1,19 @@
+# TODO
+* add a process that handles besside-ng results -> wpa_cli
+* maybe add an info web interface that exposes itself on ngrox etc
+
 # operations
+* enable non-free in /etc/apt/sources.list
 * packages:
+** firmware-realtek package (if you have a realtek chipset)
 ** libnl-3-dev
+** tcpdump
 ** clone aircrack-ng
 ** sudo make experimental=true install
-* drop in the priv key for the atun autossh tunnel 
+* drop in your priv key for the atun autossh tunnel 
 * setup rvm, bundler
 * add atun to a @reboot line in crontab
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
-* enable non-free in /etc/apt/sources.list
-* install firmware-realtek package
 
 # dev
 * https://ngrok.com/docs#tcp-examples

@@ -1,3 +1,5 @@
 #!/bin/bash
 iface='wlan0mon'
-cd ~/besside && sudo besside-ng `list_monitoring` 
+iface=$1 || `list_monitoring`
+echo $iface
+cd ~/gits/piloto/log && sudo besside-ng $iface 

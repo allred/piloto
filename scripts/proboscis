@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# purpose: drink the probe-reqs
+require 'concurrent'
+require 'open3'
+STDOUT.sync = true
+
+dir_scripts = File.expand_path File.dirname(__FILE__)
+dir_output = "#{dir_scripts}/../log"
+Dir.chdir dir_output
+# TODO: go monitor mode?
+devices_monitoring = `#{dir_scripts}/list_monitoring`.split("\n")
+device_monitoring = ARGV[0] || devices_monitoring.kind_of?(Array) ? devices_monitoring[0] : devices_monitoring
+cmd_probe = <<-eoc
+  sudo tcpdump -i #{device_monitoring} -tttt -e -s 256 type mgt subtype probe-req
+eoc
+cmd_probe = <<-eoc
+  sudo airodump-ng -g -w airodump --output-format csv,gps #{device_monitoring}
+eoc
+  #sudo airodump-ng -g -w airodump --output-format pcap #{device_monitoring}
+puts cmd_probe
+system cmd_probe
+
+=begin
+# channel hopping
+
+def hopchan
+  %q(1 2).sample
+end
+
+task = Concurrent::TimerTask.new(execution_interval: 1, timeout_interval: 2) do
+  chan_us = 1 + rand(11)
+  cmd_hop = <<-eoc
+    sudo iw dev #{device_monitorable} set channel #{chan_us}
+  eoc
+  #puts cmd_hop
+  #system cmd_hop
+end
+task.execute
+
+database = {}
+output_err = ''
+Open3.popen3(cmd_probe) do |stdin, stdout, stderr, wait_thr|
+  if !wait_thr.value.success?
+    puts "error"
+    #puts stderr.read 
+  end
+  stdout.each do |line|
+    next if line !~ /^\s*\d/
+    components = line.chomp.strip.split(/\s+/)
+    line =~ /^(\S+ \S+)/
+    t_stamp = $1
+    line =~ /(SA:\S+)/
+    _, mac_source = $1.split(/^.*?\:/)
+    next if !mac_source
+    line =~ /Probe Request \((\S+?)\)/
+    ssid = $1
+    line =~ /(\d+)\s+MHz/
+    freq = $1
+    index = "#{mac_source} #{ssid}"
+    if ssid 
+      unless database.key?(index)
+        database[index] = t_stamp
+        puts "#{t_stamp} #{index} #{freq}"
+      end
+    end
+  end
+end
+=end

@@ -2,6 +2,7 @@
 # purpose: find devices that are capable of monitor mode
 require 'open3'
 
+dir_scripts = File.expand_path File.dirname(__FILE__)
 def list_monitorable
   cmd_iw_dev = <<-eoc
     iw dev 
@@ -18,11 +19,10 @@ def list_monitorable
     eoc
     stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
     if stdout_iw_phy.match(/monitor/m)
-      # TODO: don't include if this device is already in monitor mode
-      #devices_monitorable[dev] = {
-      #  'interface': interface 
-      #}
-      devices_monitorable.push(interface)
+      # TODO: find a less naive way to exclude monitoring devices
+      if interface !~ /mon/ 
+        devices_monitorable.push(interface)
+      end
     end
   end
   return devices_monitorable

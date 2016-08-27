@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'gpsd_client'
+client = GpsdClient::Gpsd.new
+client.start
+if client.started?
+  pos = client.get_position
+  puts pos
+end
+client.stop

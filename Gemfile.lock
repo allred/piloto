@@ -1,12 +1,23 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    concurrent-ruby (1.0.2)
+    gpsd_client (0.0.5)
+    network_interface (0.0.1)
+    packetfu (1.1.11)
+      network_interface (~> 0.0)
+      pcaprub (~> 0.12)
+    pcaprub (0.12.4)
     wpa_cli_ruby (0.0.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  concurrent-ruby
+  gpsd_client
+  packetfu
+  pcaprub
   wpa_cli_ruby
 
 BUNDLED WITH

@@ -7,7 +7,7 @@ dir_scripts = File.expand_path File.dirname(__FILE__)
 device_monitorable = `#{dir_scripts}/list_monitorable`.split("\n")
 if_wlan = ARGV[0] || device_monitorable[0]
 # TODO: output should go to <gitrepodir>/tmp or log
-dir_output = '/home/pi/besside'
+dir_output = "#{dir_scripts}/../log"
 Dir.mkdir dir_output unless Dir.exists? dir_output
 Dir.chdir dir_output
 

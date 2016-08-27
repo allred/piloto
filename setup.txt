@@ -7,6 +7,7 @@
 * packages:
 ** firmware-realtek package (if you have a realtek chipset)
 ** libnl-3-dev
+** libpcap-dev
 ** tcpdump
 ** clone aircrack-ng
 ** sudo make experimental=true install
@@ -16,6 +17,14 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* parse the beacons too, save that as an offline wigle db
+* /usr/sbin/gpsd -N -F /var/run/gpsd.sock /dev/ttyUSB0
+* can we channel hop tcpdump or do we need an adapter per channel?
+** sudo tcpdump -i wlan2mon -tttt -e -s 256 type mgt subtype probe-req
+** sudo iw dev wlan2mon set channel 1
+** hopper daemon could do it async, need to figure out the tempo 
+* http://store.rokland.com/products/alfa-5-dbi-antenna-5-usb-cable-replacement-kit-for-awus036h-awus036nhr
+* /proc/cpuinfo (are you running a 32 bit or 64 bit processor?)
 * https://ngrok.com/docs#tcp-examples
 * sudo netstat -tulpn # show process holding the tunnel port, then kill
 * not: sudo apt-get install wicd; wicd-curses

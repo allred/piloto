@@ -4,7 +4,8 @@
 
 if_wlan = ARGV[0] || 'wlan0'
 if_mon = "#{if_wlan}mon"
-dir_output = '/home/pi/besside'
+dir_scripts = File.expand_path File.dirname(__FILE__)
+dir_output = "#{dir_scripts}/../log"
 Dir.mkdir dir_output unless Dir.exists? dir_output
 Dir.chdir dir_output
 cmd_airmon_start =<<-eoc

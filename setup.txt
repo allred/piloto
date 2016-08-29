@@ -6,6 +6,7 @@
 * enable non-free in /etc/apt/sources.list
 * packages:
 ** firmware-realtek package (if you have a realtek chipset)
+** gpsd gpsd-clients
 ** libnl-3-dev
 ** libpcap-dev
 ** tcpdump
@@ -17,6 +18,7 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* systemctl status gpsd.socket
 * parse the beacons too, save that as an offline wigle db
 * /usr/sbin/gpsd -N -F /var/run/gpsd.sock /dev/ttyUSB0
 * can we channel hop tcpdump or do we need an adapter per channel?

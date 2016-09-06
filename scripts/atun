@@ -5,9 +5,11 @@
 # @reboot /path/to/atun >> /path/to/atun.log 2>&1
 
 # sleep because autossh fails if there are no interfaces during boot
+system "/sbin/iwconfig"
 until system "ping -c 1 google.com"
   sleep 10
 end
+system "/sbin/iwconfig"
 target_tunnel = "ubuntu@mikeallred.net"
 mailto = ENV['MAILTO'] || "mikejallred@gmail.com"
 cmd_tunnel = <<-eoc

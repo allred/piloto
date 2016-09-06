@@ -5,7 +5,7 @@ require 'open3'
 dir_scripts = File.expand_path File.dirname(__FILE__)
 def list_monitorable
   cmd_iw_dev = <<-eoc
-    iw dev 
+    /sbin/iw dev 
   eoc
     #iw list 
 
@@ -15,7 +15,7 @@ def list_monitorable
     dev = m[0].gsub!(/#/, '')
     interface = m[1]
     cmd_iw_phy = <<-eoc
-      iw phy #{dev} info
+      /sbin/iw phy #{dev} info
     eoc
     stdout_iw_phy, status_iw_phy = Open3.capture2(cmd_iw_phy)
     if stdout_iw_phy.match(/monitor/m)

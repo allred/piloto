@@ -1,1 +1,1 @@
-systemctl status gpsd.socket
+#systemctl status gpsd.socket

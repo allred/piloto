@@ -18,6 +18,8 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* cgps -s
+* gpsmon
 * systemctl status gpsd.socket
 * parse the beacons too, save that as an offline wigle db
 * /usr/sbin/gpsd -N -F /var/run/gpsd.sock /dev/ttyUSB0

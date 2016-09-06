@@ -1,0 +1,7 @@
+#!/bin/bash
+SCRIPTDIR=/home/pi/gits/piloto/scripts
+$SCRIPTDIR/start_airmon.rb
+date
+/usr/bin/screen -S probo -d -m $SCRIPTDIR/proboscis
+echo $?
+date

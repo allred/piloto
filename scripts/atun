@@ -2,8 +2,11 @@
 # purpose: launches an autossh tunnel in a screen session to another host
 # autossh -f forks to background
 # crontab entry could look like:
-# @reboot /path/to/atun >> /path/to/atun.log 2>&1
+# @reboot /path/to/atun 2222 >> /path/to/atun.log 2>&1
+# TODO:
+# - add arg for the autossh monitoring port
 
+port_remote = ARGV[0] || 2222
 # sleep because autossh fails if there are no interfaces during boot
 system "/sbin/iwconfig"
 until system "ping -c 1 google.com"
@@ -13,7 +16,7 @@ system "/sbin/iwconfig"
 target_tunnel = "ubuntu@mikeallred.net"
 mailto = ENV['MAILTO'] || "mikejallred@gmail.com"
 cmd_tunnel = <<-eoc
-  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 20000 -o ServerAliveInterval=20 -o StrictHostKeyChecking=no -R 2222:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
+  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
 eoc
 
 system cmd_tunnel

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 # purpose: drink the probe-reqs
+require 'rubygems'
+require 'bundler/setup'
 require 'concurrent'
 require 'open3'
 STDOUT.sync = true
@@ -23,8 +25,12 @@ cmd_probe = <<-eoc
 eoc
   #sudo airodump-ng -g -w airodump --output-format pcap #{device_monitoring}
 puts cmd_probe
-system cmd_probe
-
+if device_monitoring
+  system cmd_probe
+else
+  abort 'no monitoring devices found'
+end
+  
 =begin
 # channel hopping
 

@@ -5,20 +5,23 @@
 # operations
 * enable non-free in /etc/apt/sources.list
 * packages:
+** ethtool
 ** firmware-realtek package (if you have a realtek chipset)
 ** gpsd gpsd-clients
 ** libnl-3-dev
+** libnl-gen1-3-dev
 ** libpcap-dev
+** libssl-dev
 ** tcpdump
-** clone aircrack-ng
+* clone aircrack-ng from github
 ** sudo make experimental=true install
-* drop in your priv key for the atun autossh tunnel 
 * setup rvm, bundler
+* drop in your priv key for the atun autossh tunnel 
 * add atun to a @reboot line in crontab
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
-* cgps -s
+* cgps
 * gpsmon
 * systemctl status gpsd.socket
 * parse the beacons too, save that as an offline wigle db

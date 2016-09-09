@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 # purpose: drink the probe-reqs
+# TODO:
+# - tidy up the output dir situation
+# - figure out what to do with old files
 require 'rubygems'
 require 'bundler/setup'
 require 'concurrent'
@@ -20,8 +23,11 @@ device_monitoring = ARGV[0] || devices_monitoring.kind_of?(Array) ? devices_moni
 cmd_probe = <<-eoc
   sudo tcpdump -i #{device_monitoring} -tttt -e -s 256 type mgt subtype probe-req
 eoc
+# airodump-ng
+# sending the ncurses output to null helps save a lot of power
+# --update 30 didn't seem to help reduce screen cpu usage
 cmd_probe = <<-eoc
-  sudo airodump-ng --gpsd -w #{fileid} --output-format csv #{device_monitoring}
+  sudo airodump-ng --gpsd -w #{fileid} --output-format csv #{device_monitoring} 2> /dev/null
 eoc
   #sudo airodump-ng -g -w airodump --output-format pcap #{device_monitoring}
 puts cmd_probe

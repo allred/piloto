@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 # purpose: run airmon-ng 
 # relies on the aircrack-ng package
+# TODO: add a regex hint for choosing a device based on mac address
+# MAC_DEVICE_MONITOR -- can be partially matched 
 require 'open3'
 
 dir_scripts = File.expand_path File.dirname(__FILE__)
 device_monitorable = `#{dir_scripts}/list_monitorable`.split("\n")
+# if we have an array, match vs the HINT_MAC_WHATEVER or take the first
 if_wlan = ARGV[0] || device_monitorable[0]
-# TODO: output should go to <gitrepodir>/tmp or log
 dir_output = "#{dir_scripts}/../log"
 Dir.mkdir dir_output unless Dir.exists? dir_output
 Dir.chdir dir_output
@@ -19,6 +21,9 @@ stdout_li.split("\n").each do |l|
   #puts [LINE: m[0]]
   interfaces_wlan.push(m[0])
 end
+
+# cobble together a nohup command to start monitor mode on one device
+
 cmd_ifdown = ''
 cmd_ifup = ''
 interfaces_wlan.each do |i|

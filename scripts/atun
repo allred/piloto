@@ -8,6 +8,7 @@
 
 port_remote = ARGV[0] || 2222
 # sleep because autossh fails if there are no interfaces during boot
+puts "STARTING #{Time.now}"
 system "/sbin/iwconfig"
 until system "ping -c 1 google.com"
   sleep 10
@@ -16,7 +17,7 @@ system "/sbin/iwconfig"
 target_tunnel = "ubuntu@mikeallred.net"
 mailto = ENV['MAILTO'] || "mikejallred@gmail.com"
 cmd_tunnel = <<-eoc
-  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
+  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
 eoc
 
 system cmd_tunnel
@@ -27,3 +28,4 @@ eoc
 # sleepin don't help ye, pausin won't do ye no good 
 sleep 30
 system cmd_mail
+puts "ENDING #{Time.now}"

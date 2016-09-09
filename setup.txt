@@ -21,6 +21,9 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* https://www.raspberrypi.org/documentation/configuration/config-txt.md
+* tried setting sshd ClientAliveInterval to 120
+** moving between wifi networks was blocking the autossh restart
 * cgps
 * gpsmon
 * systemctl status gpsd.socket

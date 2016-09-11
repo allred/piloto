@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# purpose: Piloto WAtch
+# - get periodic status updates on various piloto things
+#require 'rubygems'
+#require 'bundler/setup'
+
+delay = ARGV[0] || 10 
+lc = system "which lolcat" == true ? '| lolcat' : ''
+lc = '| lolcat'
+dir_scripts = File.expand_path File.dirname(__FILE__)
+
+cmds_watch = [
+  %Q!ifconfig | grep mon!,
+  %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | head -n 5!,
+  %Q!ps aux | sort -nrk 3,3 | head -n 4!,
+  %Q!df -h /!,
+  %Q!#{dir_scripts}/parse_gps | tail -n 4!,
+]
+  # curl "localhost:2497?POLL=enable:true" # this hangs if no fix
+  #%Q!top -n 1 | head -n 10!,
+
+while true
+  temp_f = `cat /sys/class/thermal/thermal_zone0/temp`.chomp.to_i / 1000 + 32
+  temp_f *= (9.0 / 5.0) 
+  system "clear"
+  system %Q!echo "[#{`date`.chomp}] #{delay}s #{temp_f}F" #{lc}!
+  cmds_watch.each do |c|
+    system "#{c} #{lc}"
+  end
+  sleep delay 
+end
+
+
+=begin
+cmd_watch = <<-eoc
+  watch --color -n #{delay} "ls -ltR #{ENV['HOME']}/gits/piloto/log | head -n 5 | lolcat"
+eoc
+=end

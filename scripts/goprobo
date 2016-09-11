@@ -1,7 +1,12 @@
 #!/bin/bash
+# TODO: take a look at airserv-ng and install on a pi zero
 SCRIPTDIR=/home/pi/gits/piloto/scripts
-$SCRIPTDIR/start_airmon.rb
+LOGDIR=/home/pi/log
+
+cd /home/pi/gits/piloto 
+source $HOME/.rvm/scripts/rvm
 date
-/usr/bin/screen -S probo -d -m $SCRIPTDIR/proboscis
+# maybe try -h 100 (for gnu screen)?
+$SCRIPTDIR/start_airmon.rb && /usr/bin/screen -S probo -d -m $SCRIPTDIR/proboscis
 echo $?
 date

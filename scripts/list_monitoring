@@ -5,7 +5,7 @@ require 'open3'
 def list_monitoring
   devices_monitoring = []
   cmd_ifconfig = <<-eoc
-    ifconfig
+    /sbin/ifconfig
   eoc
   stdout_ifconfig, status_ifconfig = Open3.capture2(cmd_ifconfig)
   stdout_ifconfig.split("\n").each do |line|

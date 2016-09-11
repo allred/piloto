@@ -29,6 +29,7 @@ dir_output = "#{dir_scripts}/../log"
 file_gps = ARGV[0] || `ls -tr #{dir_output}/*.gps | tail -n 1`.chomp
 a_gps = gps_to_array(file_gps)
 a_gps.each do | h |
-  puts "#{h['time']},#{h['lat']},#{h['long']}"
+  #puts [DEBUG: h]
+  puts [h['time'], h['lat'], h['lon']].join(',')
 end
 

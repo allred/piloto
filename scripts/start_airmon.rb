@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 # purpose: run airmon-ng 
 # relies on the aircrack-ng package
-# TODO: add a regex hint for choosing a device based on mac address
+# TODO:
+# - add a regex hint for choosing a device based on mac address
+# - use iw dev to list devices, not ifconfig
 # MAC_DEVICE_MONITOR -- can be partially matched 
 require 'open3'
 

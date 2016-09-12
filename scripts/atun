@@ -8,16 +8,17 @@
 
 port_remote = ARGV[0] || 2222
 # sleep because autossh fails if there are no interfaces during boot
+piloto_host_ping = ENV['PILOTO_HOST_PING'] || 'google.com'
 puts "STARTING #{Time.now}"
 system "/sbin/iwconfig"
-until system "ping -c 1 google.com"
+until system "ping -c 1 #{piloto_host_ping}"
   sleep 10
 end
 system "/sbin/iwconfig"
-target_tunnel = "ubuntu@mikeallred.net"
-mailto = ENV['MAILTO'] || "mikejallred@gmail.com"
+target_tunnel = ENV['PILOTO_HOST_TARGET_TUNNEL'] || "localhost"
+mailto = ENV['PILOTO_MAILTO_TUNNEL'] || "freebird@example.com"
 cmd_tunnel = <<-eoc
-  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PATH_PEM']} #{target_tunnel}
+  /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PILOTO_PATH_PEM']} #{target_tunnel}
 eoc
 
 system cmd_tunnel

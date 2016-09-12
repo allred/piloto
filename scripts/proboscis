@@ -27,7 +27,7 @@ eoc
 # sending the ncurses output to null helps save a lot of power
 # --update 30 didn't seem to help reduce screen cpu usage
 cmd_probe = <<-eoc
-  sudo airodump-ng --gpsd -w #{fileid} --output-format csv #{device_monitoring} 2> /dev/null
+  sudo airodump-ng --gpsd -w #{fileid} --output-format csv #{device_monitoring} > /dev/null 2>&1
 eoc
   #sudo airodump-ng -g -w airodump --output-format pcap #{device_monitoring}
 puts cmd_probe

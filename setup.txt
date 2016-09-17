@@ -21,6 +21,9 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* Panda PAUD5
+** can use up to 620mA at full power?
+** http://www.pandawireless.com/download/PWUsersManual_V2.6.15.pdf
 * cgps
 * gpsmon
 * systemctl status gpsd.socket

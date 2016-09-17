@@ -24,6 +24,9 @@
 * Panda PAUD5
 ** can use up to 620mA at full power?
 ** http://www.pandawireless.com/download/PWUsersManual_V2.6.15.pdf
+* https://www.raspberrypi.org/documentation/configuration/config-txt.md
+* tried setting sshd ClientAliveInterval to 120
+** moving between wifi networks was blocking the autossh restart
 * cgps
 * gpsmon
 * systemctl status gpsd.socket

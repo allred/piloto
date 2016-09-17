@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# purpose: Piloto WAtch
+# - get periodic status updates on various piloto things
+require 'bundler/setup'
+require 'lolcat'
+#require 'thor'
+
+delay = ARGV[0]
+lc = system "which lolcat" == true ? '| lolcat' : ''
+lc = '| lolcat'
+dir_scripts = File.expand_path File.dirname(__FILE__)
+
+cmds_watch = [
+  %Q!ifconfig | grep mon!,
+  %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | head -n 5!,
+  %Q!#{dir_scripts}/parse_gps | tail -n 4!,
+  %Q!ps aux | sort -nrk 3,3 | head -n 3!,
+  %Q!df -h /!,
+]
+  # curl "localhost:2497?POLL=enable:true" # this hangs if no fix
+  #%Q!top -n 1 | head -n 10!,
+
+runonce = true 
+until !runonce
+  temp_f = File.read('/sys/class/thermal/thermal_zone0/temp').chomp.to_i / 1000 + 32
+  temp_f *= (9.0 / 5.0) 
+  delay ? system("clear") : nil
+  opts_lolcat = {
+    :freq => 0.1,
+    :os => rand(256), 
+    :spread => 3.0,
+  }
+  Lol.println "[#{Time.now}] #{delay}s #{temp_f}F", {}, opts_lolcat
+  cmds_watch.each do |c|
+    opts_lolcat[:os] += 256 
+    `#{c}`.chomp.split("\n").each do |line|
+      opts_lolcat[:os] += 1
+      Lol.println line, {}, opts_lolcat
+    end
+  end
+  runonce ? sleep(delay.to_i) : nil 
+  runonce = delay ? true : false
+end
+
+
+=begin
+cmd_watch = <<-eoc
+  watch --color -n #{delay} "ls -ltR #{ENV['HOME']}/gits/piloto/log | head -n 5 | lolcat"
+eoc
+=end

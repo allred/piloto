@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# purpose: parse a gps file
+require 'json'
+
+# purpose: returns an array of hashes representing an airodump gps file
+
+def gps_to_array(path_file_gps)
+  string_gps_raw = File.read(path_file_gps)
+  string_gps_raw.gsub!(/\r\r?/, "\n")
+
+  output = []
+  string_gps_raw.each_line do |line|
+    h = {}
+    begin
+      h = JSON.parse(line)
+      parsed = true
+    rescue
+    end
+    if parsed
+      #puts [DEBUG: h]
+      output.push h
+    end
+  end
+  return output
+end
+
+dir_scripts = File.expand_path File.dirname(__FILE__)
+dir_output = "#{dir_scripts}/../log"
+file_gps = ARGV[0] || `ls -tr #{dir_output}/*.gps | tail -n 1`.chomp
+a_gps = gps_to_array(file_gps)
+a_gps.each do | h |
+  #puts [DEBUG: h]
+  puts [h['time'], h['lat'], h['lon']].join(',')
+end
+

@@ -7,6 +7,7 @@ GEM
       jmespath (~> 1.0)
     aws-sdk-resources (2.5.6)
       aws-sdk-core (= 2.5.6)
+    builder (3.2.2)
     concurrent-ruby (1.0.2)
     geocluster (0.1.1)
       geocoder
@@ -17,13 +18,22 @@ GEM
     lolcat (42.1.43)
       paint (~> 1.0.0)
       trollop (~> 2.1.2)
+    mini_portile2 (2.1.0)
     network_interface (0.0.1)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     packetfu (1.1.11)
       network_interface (~> 0.0)
       pcaprub (~> 0.12)
     paint (1.0.1)
     pcaprub (0.12.4)
+    pkg-config (1.1.7)
     pr_geohash (1.0.0)
+    redis (3.3.1)
+    ruby_kml (0.1.7)
+      builder
+      nokogiri
     thor (0.19.1)
     trollop (2.1.2)
     wpa_cli_ruby (0.0.3)
@@ -39,8 +49,10 @@ DEPENDENCIES
   lolcat
   packetfu
   pcaprub
+  redis
+  ruby_kml
   thor
   wpa_cli_ruby
 
 BUNDLED WITH
-   1.12.5
+   1.13.1

@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# purpose: output kml to stderr
+# TODO:
+# profile me!
+require_relative '../lib/piloto'
+require 'geocluster'
+require 'ruby_kml'
+
+#limit_waypoints = 100000
+limit_waypoints = nil 
+options_cc = {
+  :limit => 2000,
+  #:nucleus => true,
+  :precision => 8,
+}
+
+dir_files_gps = '/home/mallred/tmp/rp3-piloto-1/log'
+Dir.chdir dir_files_gps
+files = Dir.glob("*.gps")
+a_gps = []
+index = 0
+breakme = false
+puts "#{Time.now} parse start"
+count_files = 0
+files.each do |f|
+  if File.size(f) > 0
+    a_file_gps = Piloto.gps_to_array(f)
+    count_files += 1
+    a_file_gps.each do |h|
+      a_gps.push [
+        h['lat'], h['lon']
+      ]
+      index += 1
+      if limit_waypoints && index == limit_waypoints
+        breakme = true
+      end
+      break if breakme
+    end
+  end
+  break if breakme
+end
+puts "#{Time.now} parse done: #{index} waypoints, about #{count_files} files"
+
+puts "#{Time.now} cluster start"
+cluster = Geocluster.cluster_coordinates(a_gps, options_cc)
+#puts [D: cluster]
+puts "#{Time.now} cluster done: ~#{count_files} files / #{cluster.length} markers / #{index} waypoints"
+
+puts "#{Time.now} kml start"
+kml = KMLFile.new
+folder = KML::Folder.new(:name => 'piloto')
+cluster.each do |c|
+  #puts c
+  #puts c[:count]
+  folder.features << KML::Placemark.new(
+    :name => c[:count],
+    :geometry => KML::Point.new(:coordinates => {:lat => c[:coordinates][0], :lng => c[:coordinates][1]}),
+  )
+end
+kml.objects << folder
+STDERR.puts kml.render
+puts "#{Time.now} kml done"

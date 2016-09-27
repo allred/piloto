@@ -1,0 +1,77 @@
+<CTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>KML Click Capture Sample</title>
+    <style>
+      html, body {
+        background-color: black;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        }
+      #map {
+       height: 100%;
+       width: 100%;
+       overflow: hidden;
+       float: left;
+       border: thin solid #333;
+       }
+       /*
+      #capture {
+       height: 360px;
+       width: 480px;
+       overflow: hidden;
+       float: left;
+       background-color: #ECECFB;
+       border: thin solid #333;
+       border-left: none;
+       }
+       */
+    </style>
+  </head>
+  <body>
+    <script>
+      var map;
+      var src = 'https://developers.google.com/maps/documentation/javascript/tutorials/westcampus.kml';
+      var src = 'file:///home/mallred/gits/piloto/scripts/piloto.kml';
+      var src = 'http://mikeallred.com/piloto.kml?' + Math.random(2000);
+
+      /**
+       * Initializes the map and calls the function that creates polylines.
+       */
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          //center: new google.maps.LatLng(-19.257753, 146.823688),
+          //zoom: 2,
+          mapTypeId: 'terrain'
+        });
+        loadKmlLayer(src, map);
+      }
+
+      /**
+       * Adds a KMLLayer based on the URL passed. Clicking on a marker
+       * results in the balloon content being loaded into the right-hand div.
+       * @param {string} src A URL for a KML file.
+       */
+      function loadKmlLayer(src, map) {
+        var kmlLayer = new google.maps.KmlLayer(src, {
+          suppressInfoWindows: true,
+          preserveViewport: false,
+          map: map
+        });
+        google.maps.event.addListener(kmlLayer, 'click', function(event) {
+          var content = event.featureData.infoWindowHtml;
+          var testimonial = document.getElementById('capture');
+          testimonial.innerHTML = content;
+        });
+       }
+      </script>
+    <div id="map"></div>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGMY1T2TLX2AimIhbKHPy5-sw5DikwLqA&callback=initMap">
+    </script>
+    <div id="capture"></div>
+  </body>
+</html>

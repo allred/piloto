@@ -16,7 +16,7 @@ hostid = `hostid`.chomp
 hostname = `hostname`.chomp
 fileid = "#{hostname}-#{hostid}"
 
-system "sudo service gpsd start"
+system "sudo service gpsd restart"
 # TODO: go monitor mode?
 devices_monitoring = `#{dir_scripts}/list_monitoring`.split("\n")
 device_monitoring = ARGV[0] || devices_monitoring.kind_of?(Array) ? devices_monitoring[0] : devices_monitoring

@@ -12,7 +12,7 @@ STDOUT.sync = true
 dir_scripts = File.expand_path File.dirname(__FILE__)
 dir_output = "#{dir_scripts}/../log"
 Dir.chdir dir_output
-hostid = `hostid`.chomp
+hostid = `cat /etc/machine-id`.chomp[0..7] || `hostid`.chomp
 hostname = `hostname`.chomp
 fileid = "#{hostname}-#{hostid}"
 

@@ -21,6 +21,11 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* besside > freetunnel || freevpn
+** hostapd
+* wpa_cli status
+* wpa_cli list_networks
+* https://w1.fi/wpa_supplicant/devel/
 * Panda PAUD5
 ** can use up to 620mA at full power?
 ** http://www.pandawireless.com/download/PWUsersManual_V2.6.15.pdf

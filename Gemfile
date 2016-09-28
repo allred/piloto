@@ -1,13 +1,16 @@
 source 'https://rubygems.org'
 
-gem 'aws-sdk', '~> 2'
 gem 'concurrent-ruby', require: 'concurrent'
-gem 'geocluster'
 gem 'gpsd_client'
 gem 'lolcat'
 gem 'packetfu'
 gem 'pcaprub'
-gem 'redis'
-gem 'ruby_kml'
 gem 'thor'
 gem 'wpa_cli_ruby'
+
+group :reaper do
+  gem 'aws-sdk', '~> 2'
+  gem 'geocluster'
+  gem 'redis'
+  gem 'ruby_kml'
+end

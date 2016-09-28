@@ -4,6 +4,7 @@
 # profile me!
 # generate a unique set of geohashes, bypass geocluster array arg
 ## try geohash or pr_geohash
+require 'bundler/setup'
 require_relative '../lib/piloto'
 require 'geocluster'
 require 'ruby_kml'
@@ -14,7 +15,7 @@ class GenKML < Thor
   option :dir_files_gps
   option :limit_waypoints
   def genkml
-    limit_waypoints = options[:limit_waypoints].to_i || nil
+    limit_waypoints = options[:limit_waypoints].to_i || 0 
     options_cc = {
       :limit => 200,
       #:nucleus => true,
@@ -48,7 +49,7 @@ class GenKML < Thor
     end
     puts "#{Time.now} parse done: #{index} waypoints, about #{count_files} files"
 
-    puts "#{Time.now} cluster start"
+    puts "#{Time.now} cluster start #{a_gps.length}"
     cluster = Geocluster.cluster_coordinates(a_gps, options_cc)
     #puts [D: cluster]
     puts "#{Time.now} cluster done: ~#{count_files} files / #{cluster.length} markers / #{index} waypoints"

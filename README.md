@@ -1,22 +1,31 @@
-### piloto
+# piloto
 
 This project is intended to run on at least two hosts:
 
 * Receiver
-* Reaper (temporary name?)
+* Reaper
 
-# Reciever
+Take a look at setup.txt for in-progress documentation.
 
-The Receiver is just a host that listens to things like GPS and wifi.  It is mostly passive, except for establishing some kind of tunnel/conduit to the Reaper as it can.  The focus is to be rebootable, rugged, deal with local hardware idiosyncracies, etc.
+## Receiver
 
-Part of the code is intended to be run on a Raspberry Pi 3+.  You can run it on a Raspberry Pi 2 if you have an extra wifi dongle.  It will be tested again on Raspberry Pi 1 at some point.  USB power requirements and memory requirements come into play.
+The Receiver is just a host that listens to things like GPS and wifi.  It is mostly passive, except for establishing some kind of tunnel/conduit to the Reaper as it can.  The focus is to be rebootable, rugged, deal with local hardware idiosyncrasies, etc.
 
-You will need at least two wifi devices, and importantly, one wifi device (a USB dongle is an easy choice) that can go into monitor mode.  The Raspberry Pi 3 has an onboard wifi device, which makes it an ideal choice as of 2016.
+The initial intention is to run this part of the code on a Raspberry Pi 3+.  You can run it on a Raspberry Pi 2 if you have an additional wifi dongle.  It will be tested again on Raspberry Pi 1 at some point.  USB power and memory requirements come into play on the Raspberry Pi platform.
+
+You will need at least two wifi devices, and importantly, one wifi device (a USB dongle is an easy choice) that can go into monitor mode.  The Raspberry Pi 3 has an onboard wifi device, which makes the Pi3 platform an optimal choice as of 2016.
 
 USB wifi devices, some tested and sane choices:
 
+* ALFA AWUS036NEH
 * TP-LINK TL-WN722N
 
-You may also want a GPS receiver, some recommended ones:
+USB GPS receivers, some tested and recommended ones:
 
 * U-blox7
+
+Power requirements are in flux, but a modern 20k+ mah usb battery pack is a good place to start.
+
+## Reaper
+
+The initial intention is to run this part of the code on an EC2 instance.  This where data gathering and analysis will likely occur, or at least a gateway for such.  Receivers which connect will be polled for data.

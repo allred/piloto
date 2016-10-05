@@ -14,10 +14,13 @@ system "/sbin/iwconfig"
 until system "ping -c 1 #{piloto_host_ping}"
   sleep 10
 end
+puts "TUNNEL START #{Time.now}"
 system "/sbin/iwconfig"
 target_tunnel = ENV['PILOTO_HOST_TARGET_TUNNEL'] || "localhost"
 mailto = ENV['PILOTO_MAILTO_TUNNEL'] || "freebird@example.com"
 cmd_tunnel = <<-eoc
+  export AUTOSSH_DEBUG=1
+  export AUTOSSH_LOGLEVEL=7
   export AUTOSSH_GATETIME=0
   /usr/bin/screen -S tunnel -d -m /usr/bin/autossh -M 0 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -R #{port_remote}:localhost:22 -i #{ENV['PILOTO_PATH_PEM']} #{target_tunnel}
 eoc
@@ -28,6 +31,6 @@ cmd_mail = <<-eoc
   /sbin/iwconfig | mail --debug-level=2 -s "#{`hostname`} #{File.basename($0)} #{`/sbin/iwgetid -r`}" #{mailto}
 eoc
 # sleepin don't help ye, pausin won't do ye no good 
-sleep 30
-system cmd_mail
+#sleep 30
+#system cmd_mail
 puts "ENDING #{Time.now}"

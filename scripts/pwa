@@ -13,8 +13,9 @@ dir_scripts = File.expand_path File.dirname(__FILE__)
 cmds_watch = [
   %Q!ifconfig | grep mon!,
   %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | head -n 5!,
-  %Q!#{dir_scripts}/parse_gps | tail -n 4!,
-  %Q!ps aux | sort -nrk 3,3 | head -n 3!,
+  %Q!#{dir_scripts}/wpa_cli.rb | head -n 4!,
+  %Q!#{dir_scripts}/parse_gps | tail -n 2!,
+  %Q!ps aux | sort -nrk 3,3 | head -n 1!,
   %Q!df -h /!,
 ]
   # curl "localhost:2497?POLL=enable:true" # this hangs if no fix

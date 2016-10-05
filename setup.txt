@@ -21,6 +21,10 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* otg mode - http://blog.gbaman.info/?p=699
+* write a new tool with airodump-ng lib to deal with mem bloat, etc
+* hcitool inq/scan
+* airserv-ng
 * besside > freetunnel || freevpn
 ** hostapd
 * wpa_cli status

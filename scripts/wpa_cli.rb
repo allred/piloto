@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 require 'bundler/setup'
 require 'wpa_cli_ruby'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
 # TODO:
 # - need to cleanup junk
 # 1. go through known networks, ignore ones with psk, delete if they don't answer
@@ -16,30 +18,6 @@ require 'wpa_cli_ruby'
 
 @wpa = WpaCliRuby::WpaCli.new
 @report = []
-
-# purpose: list networks known to wpa_supplicant and find out if ssid is current
-
-def is_current(ssid)
-  is_current = false
-  @wpa.list_networks.each do |n|
-    if n.ssid == ssid
-      if n.flags == '[CURRENT]' 
-        is_current = true
-      end
-    end
-  end
-  return is_current
-end
-
-def ssid_current
-  ssid = nil
-  @wpa.list_networks.each do |n|
-    if n.flags == '[CURRENT]'
-      ssid = n
-    end
-  end
-  return ssid
-end
 
 # purpose: return a list of ssid structs that could be probed/associated to
 
@@ -60,7 +38,7 @@ def scan_for_open
       count_no_ssid += 1
       next
     end
-    if is_current(r.ssid) 
+    if Wpa.is_ssid_current(r.ssid) 
       #@report.push [curr: [r.bssid, r.ssid, r.flags]]
       next
     end
@@ -74,6 +52,7 @@ def scan_for_open
   return ssids_open
 end
 
+ssid_current = Wpa.list_ssid_current
 @report.push [curr: [ssid_current.ssid, ssid_current.flags]]
 scan_for_open.each do |o|
   @report.push [open: [o.bssid, o.ssid, o.flags]] 

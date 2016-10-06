@@ -24,6 +24,13 @@
 * reaper should poll for pwa-lite
 ** don't parse anything 
 * hcitool bluetooth
+* figure out how to set wpa-roam in /etc/network/interfaces after mon mode?
+** on 2016-10-05, set it manually on wlan0, will see what happens
+** can we set non-mon interface to wpa-roam with ethtool/net-tools/mii-tool?
+** /sbin/wpa_action
+** /etc/ifplugd/action.d/action_wpa
+** netctl and wpa_actiond for arch linux could be ported to raspbian
+** wicd has lots of bad reviews, isn't maintained
 * otg mode - http://blog.gbaman.info/?p=699
 * write a new tool with airodump-ng lib to deal with mem bloat, etc
 * hcitool inq/scan

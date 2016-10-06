@@ -21,6 +21,9 @@
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
 # dev
+* reaper should poll for pwa-lite
+** don't parse anything 
+* hcitool bluetooth
 * besside > freetunnel || freevpn
 ** hostapd
 * wpa_cli status

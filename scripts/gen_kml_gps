@@ -1,4 +1,7 @@
 #!/bin/bash
 LIMIT_WAYPOINTS=500000
-cd /home/ubuntu/gits/piloto
-/home/ubuntu/gits/piloto/scripts/geo_cluster genkml --dir_files_gps /home/ubuntu/m/rp3-piloto-1/log --limit_waypoints $LIMIT_WAYPOINTS 2> /var/www/presence/public/piloto.kml
+DIR_PILOTO="/home/ubuntu/gits/piloto"
+echo "$0 $(date)"
+cd $DIR_PILOTO 
+$DIR_PILOTO/scripts/geo_cluster genkml --dir_files_gps /home/ubuntu/m/rp3-piloto-1/log --limit_waypoints $LIMIT_WAYPOINTS 2> /var/www/presence/public/piloto.kml
+echo "$0 $(date)"

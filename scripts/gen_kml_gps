@@ -1,6 +1,8 @@
 #!/bin/bash
 LIMIT_WAYPOINTS=500000
 DIR_PILOTO="/home/ubuntu/gits/piloto"
+# the following var is the output from: rvm env --path
+source $PILOTO_RVM_ENV
 echo "$0 $(date)"
 cd $DIR_PILOTO 
 $DIR_PILOTO/scripts/geo_cluster genkml --dir_files_gps /home/ubuntu/m/rp3-piloto-1/log --limit_waypoints $LIMIT_WAYPOINTS 2> /var/www/presence/public/piloto.kml

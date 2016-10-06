@@ -8,6 +8,10 @@ gem 'pcaprub'
 gem 'thor'
 gem 'wpa_cli_ruby'
 
+group :development do
+  gem 'pry'
+end
+
 group :reaper do
   gem 'aws-sdk', '~> 2'
   gem 'geocluster'

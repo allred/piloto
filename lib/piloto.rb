@@ -1,7 +1,27 @@
 # purpose: piloto core
 require 'json'
+require 'wpa_cli_ruby'
+
+module Wpa
+  @wpa = WpaCliRuby::WpaCli.new
+
+  def Wpa.is_ssid_current(ssid)
+    is_current = false
+    @wpa.list_networks.each do |n|
+      if n.ssid == ssid
+        if n.flags == '[CURRENT]'
+          is_current = true
+        end
+      end
+    end
+    return is_current
+  end
+end
 
 class Piloto
+  def self.testes
+    puts @wpa
+  end
 
   # purpose: returns an array of hashes representing an airodump gps file
 

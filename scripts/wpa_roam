@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+# purpose:
+# - try and get a connection to the internet via open wifi networks
+# - run periodically to associate and test open wifi networks
+# the plan:
+# - get a list of saved open networks (without psk)
+# - get a list of scanned networks
+# - ping a known host, such as google.com
+# -- if the ping succeeds
+# --- do nothing, we have a connection to the internet
+# -- if the ping fails
+# --- check if the current network is an open network
+# ---- if psk, do not delete 
+# ---- if open, delete it
+
+require 'bundler/setup'
+require 'wpa_cli_ruby'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+#puts Wpa.is_ssid_current('-=[VirusNet]=-')

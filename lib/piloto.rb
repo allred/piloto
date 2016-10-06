@@ -3,19 +3,38 @@ require 'json'
 require 'wpa_cli_ruby'
 
 module Wpa
-  @wpa = WpaCliRuby::WpaCli.new
+  @wpa = nil 
+  @flag_current = '[CURRENT]'
 
   def Wpa.is_ssid_current(ssid)
     is_current = false
-    @wpa.list_networks.each do |n|
+    wpa.list_networks.each do |n|
       if n.ssid == ssid
-        if n.flags == '[CURRENT]'
+        if n.flags == @flag_current 
           is_current = true
         end
       end
     end
     return is_current
   end
+
+  def Wpa.list_ssid_current
+    ssid = nil
+    wpa.list_networks.each do |n|
+      if n.flags == @flag_current 
+        ssid = n
+      end
+    end
+    return ssid
+  end
+
+  def Wpa.wpa
+     unless @wpa
+       @wpa = WpaCliRuby::WpaCli.new
+     end
+     @wpa
+  end
+
 end
 
 class Piloto

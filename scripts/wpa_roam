@@ -18,4 +18,25 @@ require 'wpa_cli_ruby'
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
-#puts Wpa.is_ssid_current('-=[VirusNet]=-')
+@host_ping = ENV['PILOTO_HOST_PING'] || 'google.com'
+@regex_ssid_ignore = %r{
+  ^CableWifi
+  |^HP-Print
+  |^TWCWifi
+}x
+
+# purpose: determine if we have internet connectivity
+#          there is probably a better way to do this
+
+def ping
+  _ = `ping -c 1 #{@host_ping}`
+  return $?
+end
+
+#require 'pry';binding.pry
+h_ssid_current = Wpa.list_ssid_current
+ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
+
+puts "#{Time.now} #{ssid_current} #{ping.success?}"
+
+

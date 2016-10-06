@@ -19,18 +19,6 @@ require 'piloto'
 @wpa = WpaCliRuby::WpaCli.new
 @report = []
 
-# purpose: list networks known to wpa_supplicant and find out if ssid is current
-
-def ssid_current
-  ssid = nil
-  @wpa.list_networks.each do |n|
-    if n.flags == '[CURRENT]'
-      ssid = n
-    end
-  end
-  return ssid
-end
-
 # purpose: return a list of ssid structs that could be probed/associated to
 
 def scan_for_open 
@@ -64,6 +52,7 @@ def scan_for_open
   return ssids_open
 end
 
+ssid_current = Wpa.list_ssid_current
 @report.push [curr: [ssid_current.ssid, ssid_current.flags]]
 scan_for_open.each do |o|
   @report.push [open: [o.bssid, o.ssid, o.flags]] 

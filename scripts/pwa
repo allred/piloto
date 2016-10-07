@@ -2,12 +2,26 @@
 # purpose: Piloto WAtch
 # - get periodic status updates on various piloto things
 require 'bundler/setup'
+require 'getoptlong'
 require 'lolcat'
 #require 'thor'
 
-delay = ARGV[0]
-lc = system "which lolcat" == true ? '| lolcat' : ''
-lc = '| lolcat'
+opts = GetoptLong.new(
+  ['--color', '-c', GetoptLong::NO_ARGUMENT],
+  ['--delay', '-d', GetoptLong::OPTIONAL_ARGUMENT],
+)
+
+delay = false
+color = false
+opts.each do |opt, arg|
+  case opt
+    when '--color'
+      color = true
+    when '--delay'
+      delay = arg.to_i
+  end
+end
+
 dir_scripts = File.expand_path File.dirname(__FILE__)
 
 cmds_watch = [
@@ -31,21 +45,23 @@ until !runonce
     :os => rand(256), 
     :spread => 3.0,
   }
-  Lol.println "[#{Time.now}] #{delay}s #{temp_f}F", {}, opts_lolcat
+  header = "[#{Time.now}] #{delay} #{temp_f}F"
+  if color
+    Lol.println header, {}, opts_lolcat
+  else
+    puts header
+  end
   cmds_watch.each do |c|
     opts_lolcat[:os] += 256 
     `#{c}`.chomp.split("\n").each do |line|
       opts_lolcat[:os] += 1
-      Lol.println line, {}, opts_lolcat
+      if color
+        Lol.println line, {}, opts_lolcat
+      else
+        puts line
+      end
     end
   end
-  runonce ? sleep(delay.to_i) : nil 
+  runonce ? sleep(delay ? delay.to_i : 0) : nil 
   runonce = delay ? true : false
 end
-
-
-=begin
-cmd_watch = <<-eoc
-  watch --color -n #{delay} "ls -ltR #{ENV['HOME']}/gits/piloto/log | head -n 5 | lolcat"
-eoc
-=end

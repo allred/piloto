@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# NOTE:
+# - run this every 2 mins max in cron or for some reason the scan cache clears
 # purpose:
 # - try and get a connection to the internet via open wifi networks
 # - run periodically to associate and test open wifi networks
@@ -12,18 +14,19 @@
 # --- check if the current network is an open network
 # ---- if psk, do not delete 
 # ---- if open, delete it
+# --- choose a new open ssid and associate, that's it until next run
 
 require 'bundler/setup'
-require 'wpa_cli_ruby'
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
 @host_ping = ENV['PILOTO_HOST_PING'] || 'google.com'
 @regex_ssid_ignore = %r{
-  ^CableWifi
+  ^CableWiFi
   |^HP-Print
-  |^TWCWifi
+  |^TWCWiFi
 }x
+@h_log = {}
 
 # purpose: determine if we have internet connectivity
 #          there is probably a better way to do this
@@ -33,10 +36,64 @@ def ping
   return $?
 end
 
+
 #require 'pry';binding.pry
 h_ssid_current = Wpa.list_ssid_current
 ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
+result_ping = ping.success?
 
-puts "#{Time.now} #{ssid_current} #{ping.success?}"
+@h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
+@h_log['u'] = `uptime -s`.chomp
+@h_log['s'] = ssid_current
+@h_log['p'] = result_ping
 
+ssids_ess = []
+ssids_skipped_regex = []
+count_ssids_hidden = 0
+count_ssids_regex = 0
+count_ssids_scanned = 0
+count_ssids_skipped = 0
+count_ssids_wpa = 0
 
+# scan now and get results
+
+Wpa.wpa.scan
+Wpa.wpa.scan_results.each do |r|
+  count_ssids_scanned += 1
+
+  # skip blank/hidden ssids until we have a handler for these
+
+  unless r.ssid
+    count_ssids_hidden += 1
+    count_ssids_skipped += 1
+    next
+  end
+
+  # skip protected ssids
+
+  unless r.flags == '[ESS]'
+    count_ssids_wpa += 1
+    count_ssids_skipped += 1
+    next
+  end
+
+  # skip current ssid
+
+  if Wpa.is_ssid_current(r.ssid)
+    count_ssids_skipped += 1
+    next
+  end
+
+  if r.ssid =~ @regex_ssid_ignore
+    ssids_skipped_regex.push r.ssid
+    count_ssids_skipped += 1
+    next
+  end
+
+  ssids_ess.push r.ssid
+end
+@h_log['re'] = ssids_skipped_regex.length
+@h_log['sk'] = count_ssids_skipped
+@h_log['e'] = ssids_ess
+
+puts @h_log.to_json

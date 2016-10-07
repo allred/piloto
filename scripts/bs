@@ -1,5 +1,4 @@
-#!/bin/bash
-iface='wlan0mon'
-iface=$1 || `list_monitoring`
-echo $iface
-cd ~/gits/piloto/log && sudo besside-ng $iface 
+#!/usr/bin/env ruby
+iface = ARGV[0] || `list_monitoring`.chomp
+puts iface
+#cd ~/gits/piloto/log && sudo besside-ng $iface 

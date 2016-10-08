@@ -23,6 +23,7 @@ require 'piloto'
 @host_ping = ENV['PILOTO_HOST_PING'] || 'google.com'
 @regex_ssid_ignore = %r{
   ^CableWiFi
+  |^Chromecast
   |^HP-Print
   |^TWCWiFi
 }x
@@ -32,10 +33,14 @@ require 'piloto'
 #          there is probably a better way to do this
 
 def ping
-  _ = `ping -c 1 #{@host_ping}`
+  _ = `ping -c 1 #{@host_ping} > /dev/null 2>&1`
   return $?
 end
 
+# purpose: add and enable a wifi network, test, remove if bogus
+
+def provisional_add
+end
 
 #require 'pry';binding.pry
 h_ssid_current = Wpa.list_ssid_current
@@ -96,4 +101,7 @@ end
 @h_log['sk'] = count_ssids_skipped
 @h_log['e'] = ssids_ess
 
-puts @h_log.to_json
+if ssids_ess.length > 0
+  puts @h_log.to_json
+  # provisional_add here?
+end

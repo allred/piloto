@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # purpose: Piloto WAtch
 # - get periodic status updates on various piloto things
+# TODO:
+# - output json if possible
 require 'bundler/setup'
 require 'getoptlong'
 require 'lolcat'
@@ -31,6 +33,7 @@ cmds_watch = [
   %Q!#{dir_scripts}/parse_gps | tail -n 2!,
   %Q!ps aux | sort -nrk 3,3 | head -n 1!,
   %Q!df -h /!,
+  %Q!echo "$(grep -v handshake #{dir_scripts}/../log/besside.log 2>/dev/null | tail -n 1 | tr -d '[[:space:]]') $(wc -l #{dir_scripts}/../log/besside.log | awk '{print $1;}')"!,
 ]
   # curl "localhost:2497?POLL=enable:true" # this hangs if no fix
   #%Q!top -n 1 | head -n 10!,
@@ -54,7 +57,8 @@ until !runonce
   cmds_watch.each do |c|
     opts_lolcat[:os] += 256 
     `#{c}`.chomp.split("\n").each do |line|
-      opts_lolcat[:os] += 1
+      #opts_lolcat[:os] += 1
+      opts_lolcat[:os] = rand 256 
       if color
         Lol.println line, {}, opts_lolcat
       else

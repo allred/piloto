@@ -6,6 +6,6 @@ cd /home/pi/gits/piloto
 source $HOME/.rvm/scripts/rvm
 date
 # maybe try -h 100 (for gnu screen)?
-$SCRIPTDIR/start_airmon.rb && /usr/bin/screen -S probo -d -m $SCRIPTDIR/proboscis
+/usr/bin/screen -S bessi -d -m $SCRIPTDIR/bessider
 echo $?
 date

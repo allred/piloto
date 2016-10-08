@@ -22,6 +22,11 @@ cmds_connect.each do |c|
   end
   html_status += output
   html_status += '</pre>'
+  output =~ /Z,(.*)/
+  latlong = $1
+  if latlong
+    html_status += %Q(<iframe width="100%" src="https://maps.google.com/maps?q=#{latlong}&amp;output=embed"></iframe>)
+  end
 end
 
 File.open(file_output, 'w') do |f|

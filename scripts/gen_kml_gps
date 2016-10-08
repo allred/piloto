@@ -1,5 +1,5 @@
 #!/bin/bash
-LIMIT_WAYPOINTS=500000
+LIMIT_WAYPOINTS=900000
 DIR_PILOTO="/home/ubuntu/gits/piloto"
 # the following var is the output from: rvm env --path
 source $PILOTO_RVM_ENV

@@ -3,7 +3,7 @@
 # TODO: just output html to stdout, redirect via cron
 
 file_output = '/var/www/presence/public/pi.html'
-ssh_options = %q{ -o ConnectTimeout=5 }
+ssh_options = %q{ -o ConnectTimeout=10 }
 cmds_connect = [ 
   %Q(ssh -p 2222 #{ssh_options} pi@localhost "export PATH=/sbin:/bin:/usr/bin:/usr/local/bin; . /home/pi/.rvm/environments/ruby-2.3.0 && /home/pi/gits/piloto/scripts/pwa"),
 ]

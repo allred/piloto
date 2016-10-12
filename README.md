@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/allred/piloto.svg?branch=master)](https://travis-ci.org/allred/piloto)
+
 # piloto
 
 This project is intended to run on at least two hosts:

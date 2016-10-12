@@ -38,9 +38,6 @@ module Wpa
 end
 
 class Piloto
-  def self.testes
-    puts @wpa
-  end
 
   # purpose: returns an array of hashes representing an airodump gps file
 

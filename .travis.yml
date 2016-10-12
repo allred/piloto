@@ -1,0 +1,4 @@
+script: rake test
+language: ruby
+notifications:
+  email: true

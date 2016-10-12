@@ -25,7 +25,9 @@ require 'piloto'
   ^CableWiFi
   |^Chromecast
   |^HP-Print
+  |^optimumwifi
   |^TWCWiFi
+  |^xfinitywifi
 }x
 @h_log = {}
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # NOTE:
-# - run this every 2 mins max in cron or for some reason the scan cache clears
+# - run this every 2 mins max in cron, or for some reason the scan cache clears
 # purpose:
 # - try and get a connection to the internet via open wifi networks
 # - run periodically to associate and test open wifi networks
@@ -17,6 +17,7 @@
 # --- choose a new open ssid and associate, that's it until next run
 
 require 'bundler/setup'
+require 'active_support'
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
@@ -41,18 +42,18 @@ end
 
 # purpose: add and enable a wifi network, test, remove if bogus
 
-def provisional_add
+def provisional_add(ssid)
 end
 
 #require 'pry';binding.pry
 h_ssid_current = Wpa.list_ssid_current
 ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
-result_ping = ping.success?
+ping_success = ping.success?
 
 @h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
 @h_log['u'] = `uptime -s`.chomp
 @h_log['s'] = ssid_current
-@h_log['p'] = result_ping
+@h_log['p'] = ping_success
 
 ssids_ess = []
 ssids_skipped_regex = []
@@ -102,6 +103,20 @@ end
 @h_log['re'] = ssids_skipped_regex.length
 @h_log['sk'] = count_ssids_skipped
 @h_log['e'] = ssids_ess
+@h_log['a'] = []
+
+if ssids_ess.length > 0 && !ping_success
+  list_networks = ActiveSupport::ArrayInquirer.new(Wpa.wpa.list_networks)
+  ssids_ess.each do |s|
+    next if list_networks.any?(s)
+    network_id = Wpa.wpa.add_network 
+    Wpa.wpa.set_network(network_id, "ssid", s)
+    Wpa.wpa.set_network(network_id, "key_mgmt", :NONE)
+    Wpa.wpa.enable_network(network_id)
+    @h_log['a'].push(s)
+    break
+  end
+end
 
 if ssids_ess.length > 0
   puts @h_log.to_json

@@ -2,7 +2,7 @@
 # chain ssh into a pi and become with proper env
 # add -v to ssh for debugging
 # also, debug with bash -x
-e = '\\\\\\'
+#e = '\\\\\\'
 cmd = <<-eoc
   ssh -t ubuntu@mikeallred.net ssh -t -p 2222 pi@localhost
 eoc

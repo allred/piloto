@@ -4,7 +4,7 @@
 dir_scripts = File.expand_path File.dirname(__FILE__)
 dir_output = "#{dir_scripts}/../log"
 if_mon = ARGV[0] || `#{dir_scripts}/list_monitoring`.chomp
-Dir.mkdir dir_output unless Dir.exists? dir_output
+Dir.mkdir dir_output unless Dir.exist? dir_output
 Dir.chdir dir_output
 
 cmd_besside =<<-eoc

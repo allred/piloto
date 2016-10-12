@@ -12,12 +12,12 @@ device_monitorable = `#{dir_scripts}/list_monitorable`.split("\n")
 # if we have an array, match vs the HINT_MAC_WHATEVER or take the first
 if_wlan = ARGV[0] || device_monitorable[0]
 dir_output = "#{dir_scripts}/../log"
-Dir.mkdir dir_output unless Dir.exists? dir_output
+Dir.mkdir dir_output unless Dir.exist? dir_output
 Dir.chdir dir_output
 
 interfaces_wlan = []
 cmd_list_interfaces = 'ip link show | grep wlan'
-stdout_li, stderr_li, status_li = Open3.capture3(cmd_list_interfaces)
+stdout_li, _stderr_li, _status_li = Open3.capture3(cmd_list_interfaces)
 stdout_li.split("\n").each do |l|
   m = /(wlan\d+)/.match(l)
   #puts [LINE: m[0]]

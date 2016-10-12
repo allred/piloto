@@ -6,3 +6,5 @@ addons:
   apt:
     packages:
       - libpcap-dev
+  code_climate:
+    repo_token: 24ff05ca88ddc42be00ed775f2c2c2c685b590a1612b94c31ad17d8e8a73e1af

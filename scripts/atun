@@ -27,10 +27,12 @@ eoc
 
 system cmd_tunnel
 
+=begin
 cmd_mail = <<-eoc
   /sbin/iwconfig | mail --debug-level=2 -s "#{`hostname`} #{File.basename($0)} #{`/sbin/iwgetid -r`}" #{mailto}
 eoc
 # sleepin don't help ye, pausin won't do ye no good 
 #sleep 30
 #system cmd_mail
+=end
 puts "ENDING #{Time.now}"

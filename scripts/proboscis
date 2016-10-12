@@ -20,9 +20,13 @@ system "sudo service gpsd restart"
 # TODO: go monitor mode?
 devices_monitoring = `#{dir_scripts}/list_monitoring`.split("\n")
 device_monitoring = ARGV[0] || devices_monitoring.kind_of?(Array) ? devices_monitoring[0] : devices_monitoring
+
+=begin
 cmd_probe = <<-eoc
   sudo tcpdump -i #{device_monitoring} -tttt -e -s 256 type mgt subtype probe-req
 eoc
+=end
+
 # airodump-ng
 # sending the ncurses output to null helps save a lot of power
 # --update 30 didn't seem to help reduce screen cpu usage

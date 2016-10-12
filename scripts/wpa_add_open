@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# purpose: wrapper to quickly add an open wifi network
+# from wpa_cli
+# remove network ID # get rid of unwanted networks
+# save_config       # test this
+# reconnect         # doesn't reassociate, may be helpful
+# roam              # roams to a BSS, check this out
+# NOTES:
+# - maybe if we don't save config, we can avoid cleanup
+
+require 'bundler/setup'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+wpa = Wpa.wpa
+ssid = ARGV[0]
+unless ssid
+  abort "missing arg: ssid"
+end
+
+network_id = wpa.add_network
+puts [adding: network_id]
+wpa.set_network(network_id, "ssid", ssid)
+wpa.set_network(network_id, "key_mgmt", :NONE)
+wpa.enable_network(network_id)
+puts [enabled: network_id]

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# purpose: parse a gps file
+# purpose: parse a gps file, output csv
 require_relative '../lib/piloto'
 
 dir_scripts = File.expand_path File.dirname(__FILE__)

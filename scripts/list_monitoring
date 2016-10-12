@@ -7,7 +7,7 @@ def list_monitoring
   cmd_ifconfig = <<-eoc
     /sbin/ifconfig
   eoc
-  stdout_ifconfig, status_ifconfig = Open3.capture2(cmd_ifconfig)
+  stdout_ifconfig, _status_ifconfig = Open3.capture2(cmd_ifconfig)
   stdout_ifconfig.split("\n").each do |line|
     if line.match(/^(\S*mon\S*)/)
       devices_monitoring.push($1)

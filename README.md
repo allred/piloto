@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/allred/piloto.svg?branch=master)](https://travis-ci.org/allred/piloto)
+[![Code Climate](https://codeclimate.com/github/allred/piloto/badges/gpa.svg)](https://codeclimate.com/github/allred/piloto)
 
 # piloto
 

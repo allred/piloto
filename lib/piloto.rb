@@ -1,4 +1,5 @@
 # purpose: piloto core
+require 'bundler/setup'
 require 'json'
 require 'wpa_cli_ruby'
 

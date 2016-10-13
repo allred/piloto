@@ -7,6 +7,7 @@ gem 'lolcat'
 gem 'ohai'
 gem 'packetfu'
 gem 'pcaprub'
+gem 'rake'
 gem 'thor'
 gem 'wpa_cli_ruby'
 

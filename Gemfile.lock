@@ -72,6 +72,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    rake (10.4.2)
     redis (3.3.1)
     ruby_kml (0.1.7)
       builder
@@ -100,6 +101,7 @@ DEPENDENCIES
   packetfu
   pcaprub
   pry
+  rake
   redis
   ruby_kml
   thor

@@ -5,16 +5,13 @@
 # - try and get a connection to the internet via open wifi networks
 # - run periodically to associate and test open wifi networks
 # the plan:
-# - get a list of saved open networks (without psk)
-# - get a list of scanned networks
+# - enable all scanned open networks that pass criteria (regex, etc)
 # - ping a known host, such as google.com
 # -- if the ping succeeds
 # --- do nothing, we have a connection to the internet
 # -- if the ping fails
 # --- check if the current network is an open network
-# ---- if psk, do not delete 
-# ---- if open, delete it
-# --- choose a new open ssid and associate, that's it until next run
+# ---- if network is open and second ping fails, disable it
 
 require 'bundler/setup'
 require 'active_support'
@@ -92,6 +89,8 @@ Wpa.wpa.scan_results.each do |r|
     next
   end
 
+  # skip cable wifi, printers, etc
+
   if r.ssid =~ @regex_ssid_ignore
     ssids_skipped_regex.push r.ssid
     count_ssids_skipped += 1
@@ -105,6 +104,23 @@ end
 @h_log['e'] = ssids_ess
 @h_log['a'] = []
 
+# remove the current open network if we still don't have internetz
+# there could be timing problems here, need to test it
+
+if !ping.success?
+  ssid_current = Wpa.list_ssid_current
+  Wpa.wpa.scan
+  Wpa.wpa.scan_results.each do |r|
+    break unless ssid_current
+    if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
+      Wpa.wpa.disable_network(ssid_current.network_id)
+      @h_log['r'].push(ssid_current.ssid)
+    end
+  end
+end
+
+# add ssids if we have candidates
+
 if ssids_ess.length > 0 && !ping_success
   list_networks = ActiveSupport::ArrayInquirer.new(Wpa.wpa.list_networks)
   ssids_ess.each do |s|
@@ -114,11 +130,9 @@ if ssids_ess.length > 0 && !ping_success
     Wpa.wpa.set_network(network_id, "key_mgmt", :NONE)
     Wpa.wpa.enable_network(network_id)
     @h_log['a'].push(s)
-    break
   end
 end
 
 if ssids_ess.length > 0
   puts @h_log.to_json
-  # provisional_add here?
 end

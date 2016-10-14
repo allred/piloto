@@ -24,7 +24,7 @@ class GenKML < Thor
 
     dir_files_gps = options[:dir_files_gps] || '/home/mallred/tmp/rp3-piloto-1/log'
     Dir.chdir dir_files_gps
-    files = Dir.glob("*.gps")
+    files = Dir.glob("*.gps").sort { |a,b| File.mtime(b) <=> File.mtime(a) }
     a_gps = []
     index = 0
     breakme = false

@@ -6,7 +6,8 @@
 require 'bundler/setup'
 require 'getoptlong'
 require 'lolcat'
-#require 'thor'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
 
 opts = GetoptLong.new(
   ['--color', '-c', GetoptLong::NO_ARGUMENT],
@@ -42,23 +43,23 @@ runonce = true
 until !runonce
   temp_f = File.read('/sys/class/thermal/thermal_zone0/temp').chomp.to_i / 1000 + 32
   temp_f *= (9.0 / 5.0) 
+  temp_f = sprintf("%.0f", temp_f)
   delay ? system("clear") : nil
   opts_lolcat = {
     :freq => 0.1,
     :os => rand(256), 
     :spread => 3.0,
   }
-  header = "[#{Time.now}] [#{temp_f}F] #{`uptime -p`.chomp}"
+  header = "[#{Time.now} #{temp_f}F #{`uptime -p`.chomp}] #{Wpa.list_ssid_current.ssid}"
   if color
     Lol.println header, {}, opts_lolcat
   else
     puts header
   end
   cmds_watch.each do |c|
-    opts_lolcat[:os] += 256 
+    opts_lolcat[:os] = rand(256)
     `#{c}`.chomp.split("\n").each do |line|
-      #opts_lolcat[:os] += 1
-      opts_lolcat[:os] = rand 256 
+      opts_lolcat[:os] += 1
       if color
         Lol.println line, {}, opts_lolcat
       else

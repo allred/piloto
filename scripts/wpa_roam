@@ -113,7 +113,7 @@ if !ping.success?
   Wpa.wpa.scan_results.each do |r|
     break unless ssid_current
     if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
-      Wpa.wpa.disable_network(ssid_current.network_id)
+      system "wpa_cli disable_network #{ssid_current.network_id}"
       @h_log['r'].push(ssid_current.ssid)
     end
   end

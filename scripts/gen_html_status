@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 # purpose: ssh into pilotos, generate a web page to display general status
-# TODO: just output html to stdout, redirect via cron
+# TODO: arg for output file path 
+require 'tempfile'
 
 file_output = '/var/www/presence/public/pi.html'
+file_tmp = Tempfile.new('piloto_html')
 ssh_options = %q{ -o ConnectTimeout=10 }
 cmds_connect = [ 
   %Q(ssh -p 2222 #{ssh_options} pi@localhost "export PATH=/sbin:/bin:/usr/bin:/usr/local/bin; . /home/pi/.rvm/environments/ruby-2.3.0 && /home/pi/gits/piloto/scripts/pwa"),
@@ -29,7 +31,7 @@ cmds_connect.each do |c|
   end
 end
 
-File.open(file_output, 'w') do |f|
+File.open(file_tmp, 'w') do |f|
   f.write <<-eoh
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +47,8 @@ File.open(file_output, 'w') do |f|
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -56,13 +60,15 @@ body {
 
 </head>
 <body>
-<pre style="background-color: #c0c0ff;">
-  Generated: #{Time.now}
-</pre>
 eoh
   f.write html_status
   f.write <<-eoh
+<pre style="background-color: #c0c0ff;">
+  Generated: #{Time.now}
+  #{`last -n 1 | head -n 1`.chomp}
+</pre>
 </body></html>
   eoh
 end
-
+system "cp #{file_tmp.path} #{file_output}"
+file_tmp.unlink

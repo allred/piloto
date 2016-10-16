@@ -47,10 +47,12 @@ h_ssid_current = Wpa.list_ssid_current
 ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
 ping_success = ping.success?
 
+@h_log['a'] = []
+@h_log['p'] = ping_success
+@h_log['s'] = ssid_current
 @h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
 @h_log['u'] = `uptime -s`.chomp
-@h_log['s'] = ssid_current
-@h_log['p'] = ping_success
+@h_log['x'] = []
 
 ssids_ess = []
 ssids_skipped_regex = []
@@ -102,7 +104,6 @@ end
 @h_log['re'] = ssids_skipped_regex.length
 @h_log['sk'] = count_ssids_skipped
 @h_log['e'] = ssids_ess
-@h_log['a'] = []
 
 # remove the current open network if we still don't have internetz
 # there could be timing problems here, need to test it
@@ -114,7 +115,7 @@ if !ping.success?
     break unless ssid_current
     if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
       system "wpa_cli disable_network #{ssid_current.network_id}"
-      @h_log['r'].push(ssid_current.ssid)
+      @h_log['x'].push(ssid_current.ssid)
     end
   end
 end

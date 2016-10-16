@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# purpose: parse airodump-ng output file, convert csv to hash/json
+require 'json'
+
+path_file_parse = '/home/mallred/tmp/rp3-piloto-1/log/rp3-piloto-1-007f0101-22.csv'
+
+File.open(path_file_parse, 'r') do |f|
+  mode = 'ssid'
+  headers = [] 
+  index = 1
+  f.each_line do |l|
+    cols = l.chomp.split(/\s*,\s*/)
+    next unless cols.length > 1
+    if cols[0] == 'BSSID'
+      headers = cols
+    elsif cols[0] == 'Station MAC'
+      mode = 'probe' 
+      headers = cols
+    else
+      r = Hash[headers.zip(cols.map {|c| c})]
+      r.merge!('mode' => mode)
+      puts r.to_json
+    end
+    index += 1
+    if index == 3
+      #break
+    end
+  end
+end

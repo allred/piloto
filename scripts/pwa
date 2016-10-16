@@ -32,7 +32,7 @@ cmds_watch = [
   %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | head -n 5!,
   %Q!tail -n 1 #{dir_scripts}/../log/wpa_roam.log!,
   %Q!#{dir_scripts}/parse_gps | tail -n 2!,
-  %Q!ps aux | sort -nrk 3,3 | head -n 4!,
+  %Q!ps aux | sort -nrk 3,3 | tr -d '<' | head -n 4!,
   %Q!df -h /!,
   %Q!echo "$(grep -v handshake #{dir_scripts}/../log/besside.log 2>/dev/null | tail -n 1 | tr -d '[[:space:]]') $(wc -l #{dir_scripts}/../log/besside.log | awk '{print $1;}')"!,
 ]

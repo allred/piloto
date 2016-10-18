@@ -72,3 +72,7 @@
 * https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=12530
 https://ngrok.com/
 https://localtunnel.me/
+
+# rtl_sdr
+* packages
+** rtl-sdr sox

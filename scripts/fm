@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+cmd = <<-eoc
+  sudo rtl_fm -M fm \
+  -f 476.7875M \
+  -f 476.7625M \
+  -f 476.6875M \
+  -f 482.01875M \
+  -f 485.01875M \
+  -s 48k -g 50 -l 140 | \
+  play -r 48k -t raw -e s -b 16 -c 1 -V1 -
+eoc
+  #play -r 48k -t raw -e s -b 16 -c 1 -V1 -
+  #aplay -r 48k -f S16_LE
+  #sudo rtl_fm -M am -f 118.8M:137M:25k -s 12k -g 50 -l 100 | aplay -r 48k -f S16_LE
+  #sudo rtl_fm -f 98.7M -M wbfm -s 200000 -r 48000 | aplay -r 48k -f S16_LE
+  #sudo rtl_fm -f 98.7e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48k -f S16_LE
+  #sudo rtl_fm -f 96.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48k -f S16_LE
+system cmd
+

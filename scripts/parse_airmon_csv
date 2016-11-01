@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 # purpose: parse airodump-ng output file, convert csv to hash/json
+# NOTE:
+# - try postgres native jsonb, hstore
+# - try using redis hashes
 require 'json'
 
 path_file_parse = '/home/mallred/tmp/rp3-piloto-1/log/rp3-piloto-1-007f0101-22.csv'

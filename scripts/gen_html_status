@@ -65,6 +65,7 @@ eoh
   f.write <<-eoh
 <pre style="background-color: #c0c0ff;">
   Generated: #{Time.now}
+  #{`grep 'robots.txt?pp_' /var/log/nginx/access.log | tail -n 1`.chomp}
   #{`last -n 1 | head -n 1`.chomp}
 </pre>
 </body></html>

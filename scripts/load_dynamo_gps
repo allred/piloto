@@ -1,0 +1,154 @@
+#!/usr/bin/env ruby
+# purpose: load airodump gps file into dynamodb
+# NOTE:
+# aws dynamodb list-tables
+# aws dynamodb describe-table --table-name piloto_files_loaded
+# - id: uuid
+# -- host: hostid?
+# -- etime: etime
+# TODO:
+# - split into 25 item batches, load concurrently at limit
+# - if we just re-load all the data, we don't care about filenames
+# -- how much does this cost in time and money?
+# gps
+# - hostid-timestamp as key, and drop json in as the value
+# - this should be accurate enough for non sr-71s
+require 'date'
+require 'json'
+require 'open3'
+require 'securerandom'
+require 'rubygems'
+require 'bundler/setup'
+require 'aws-sdk'
+STDOUT.sync = true
+
+=begin
+files_loaded: {
+  filename
+  tstamp_loaded
+}
+gps: {
+  time
+  alt
+  class
+  climb
+  device
+  ept
+  hostid
+  hostname
+  lat
+  long
+  mode
+  speed
+  tag
+  track
+}
+=end
+
+@table_name = 'piloto_gps'
+@c = Aws::DynamoDB::Client.new(region: 'us-east-1')
+#require 'pry'; binding.pry
+@batches = [] # 25 items as of 2016-10-31
+
+def create_table(table_name)
+  r_create = @c.create_table({
+    table_name: table_name,
+    attribute_definitions: [
+      {
+        attribute_name: "hostname",
+        attribute_type: "S", # S, N, B
+      },
+      {
+        attribute_name: "etime",
+        attribute_type: "N",
+      },
+    ],
+    key_schema: [
+      {
+        attribute_name: "hostname",
+        key_type: "HASH",
+      },
+      {
+        attribute_name: "etime",
+        key_type: "RANGE",
+      },
+    ],
+    provisioned_throughput: {
+      read_capacity_units: 1,
+      write_capacity_units: 1,
+    },
+  })
+end
+#    stream_specification: {
+#      stream_enabled: false,
+#      stream_view_type: "NEW_IMAGE",
+#    },
+
+def put_item(item)
+  r_put_item = @c.put_item({
+    table_name: @table_name,
+    item: item,
+  })
+  return r_put_item
+end
+
+def batch_write_item(items)
+end
+
+if !@c.list_tables.table_names.include?(@table_name)
+  puts "table #{@table_name} does not exist, creating..."
+  create_table(@table_name)
+  puts "done"
+end
+
+file_input = ARGV[0] || '/home/ubuntu/m/rp3-piloto-1/log/rp3-piloto-1-007f0101-09.gps'
+f_gps = File.read(file_input)
+f_gps.gsub!(/\r\n?/, "\n")
+limit_batch = 25
+@index_batch = 0
+count = 0
+f_gps.each_line do |line|
+  # just throw away lines that don't parse
+  # the file could end with indications of a hard stop, malformed json
+  # missing the final part including "}", this could get more interesting...
+  #unless line =~ /\}$/
+  #  line = "#{line}\"}"
+  #end
+  h = {}
+  parsed = false
+  begin
+    h = JSON.parse(line)
+    parsed = true
+  rescue
+  end
+  if parsed
+    #h.merge!(host_time: "rp3-piloto-1_#{item['time']}")
+    #h.merge!(id: SecureRandom.uuid
+    h.merge!(hostname: 'rp3-piloto-1')
+    etime = DateTime.parse(h['time']).strftime('%Q')
+    h.merge!(etime: etime.to_i)
+    count += 1
+    if (count % limit_batch) == 0
+      @index_batch += 1
+      @batches[@index_batch] = []
+      @batches[@index_batch].push h
+    end
+    r_put = put_item(h)
+    puts [b: @index_batch, c: count, h: h.to_json]
+  end
+end
+
+puts [batches: @batches.length]
+
+r_desc = @c.describe_table({
+  table_name: @table_name,
+})
+puts [count: r_desc.table.item_count, status: r_desc.table.table_status]
+
+=begin
+#begin
+  #resp = dynamodb.list_tables
+  #puts resp.attributes
+#rescue Aws::DynamoDB::Errors::ServiceError
+#end
+=end

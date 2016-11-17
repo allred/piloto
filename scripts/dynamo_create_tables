@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# purpose: centralize and wrap some table creation
+require 'bundler/setup'
+require 'aws-sdk'
+
+def client
+  Aws::DynamoDB::Client.new(region: 'us-east-1')
+end
+
+def create_table(table_name, config)
+  if client.list_tables.table_names.include?(table_name)
+    puts "#{table_name} exists"
+  else
+    puts "creating #{table_name}"
+    config.merge!(table_name: table_name)
+    client.create_table(config)
+    puts "done"
+  end
+end
+
+create_table('piloto_files_loaded', {
+  attribute_definitions: [
+    {
+      attribute_name: 'filename',
+      attribute_type: "S",
+    },
+  ],
+  key_schema: [
+    {
+      attribute_name: 'filename',
+      key_type: 'HASH',
+    },
+  ],
+  provisioned_throughput: {
+    read_capacity_units: 1,
+    write_capacity_units: 1,
+  },
+})

@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# purpose: list tables with some description
+require 'bundler/setup'
+require 'aws-sdk'
+
+def client
+  Aws::DynamoDB::Client.new(region: 'us-east-1')
+end
+
+@c = client
+@c.list_tables.table_names.each do |t|
+  desc = @c.describe_table({ table_name: t })
+  puts sprintf("%20s %9s %s %s %10s %s", t, desc.table.table_status, desc.table.provisioned_throughput.read_capacity_units, desc.table.provisioned_throughput.write_capacity_units, desc.table.item_count, desc.table.table_size_bytes)
+end
+

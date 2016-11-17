@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # purpose: load airodump gps file into dynamodb
 # NOTE:
+# global secondary index: any time, any partition key
+# local secondary index: create-time, same partition key 
 # aws dynamodb list-tables
 # aws dynamodb describe-table --table-name piloto_files_loaded
 # - id: uuid
@@ -46,9 +48,14 @@ gps: {
 =end
 
 @table_name = 'piloto_gps'
-@c = Aws::DynamoDB::Client.new(region: 'us-east-1')
-#require 'pry'; binding.pry
 @batches = [] # 25 items as of 2016-10-31
+
+def client
+  @c = Aws::DynamoDB::Client.new(region: 'us-east-1')
+  #require 'pry'; binding.pry
+end
+
+@c = client
 
 def create_table(table_name)
   r_create = @c.create_table({
@@ -57,6 +64,10 @@ def create_table(table_name)
       {
         attribute_name: "hostname",
         attribute_type: "S", # S, N, B
+      },
+      {
+        attribute_name: "time",
+        attribute_type: "S",
       },
       {
         attribute_name: "etime",
@@ -69,8 +80,30 @@ def create_table(table_name)
         key_type: "HASH",
       },
       {
-        attribute_name: "etime",
+        attribute_name: "time",
         key_type: "RANGE",
+      },
+    ],
+    global_secondary_indexes: [
+      {
+        index_name: "etime-index",
+        key_schema: [
+          {
+            attribute_name: "time",
+            key_type: "HASH",
+          },
+          {
+            attribute_name: "etime",
+            key_type: "RANGE",
+          },
+        ],
+        projection: {
+          projection_type: "ALL",
+        },
+        provisioned_throughput: {
+          read_capacity_units: 1,
+          write_capacity_units: 1,
+        },
       },
     ],
     provisioned_throughput: {
@@ -134,13 +167,15 @@ f_gps.each_line do |line|
       @batches[@index_batch].push h
     end
     r_put = put_item(h)
-    puts [b: @index_batch, c: count, h: h.to_json]
+    #puts [b: @index_batch, c: count, h: h.to_json]
+    #puts [c: count, r: r_put]
+    puts [c: count, h: h]
   end
 end
 
 puts [batches: @batches.length]
 
-r_desc = @c.describe_table({
+r_desc = client.describe_table({
   table_name: @table_name,
 })
 puts [count: r_desc.table.item_count, status: r_desc.table.table_status]

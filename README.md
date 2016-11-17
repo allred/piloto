@@ -27,8 +27,8 @@ USB GPS receivers, some tested and recommended ones:
 
 * U-blox7
 
-Power requirements are in flux, but a modern 20k+ mah usb battery pack is a good place to start.
+Power requirements are in flux, but a modern 20k+ mAh usb battery pack is a good place to start.
 
 ## Reaper
 
-The initial intention is to run this part of the code on an EC2 instance.  This where data gathering and analysis will likely occur, or at least a gateway for such.  Receivers which connect will be polled for data.
+The initial intention is to run this part of the code on an EC2 instance.  This is where data gathering and analysis will likely occur, or at least a gateway for such.  Receivers which connect will be polled for data.

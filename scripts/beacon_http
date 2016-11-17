@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# purpose: diagnostic (temporary?) http requestor, runs on the receiver
+#          just in case we get an open network and only get http access out
+# TODO:
+# - try writing this with open-uri to avoid shelling out
+require 'bundler/setup'
+require 'active_support'
+require 'open-uri'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+url_ping_base = 'http://mikeallred.com'
+hostname = `hostname`.chomp
+
+ps = ''
+['bessider', 'proboscis'].each do |p|
+  _ = `pgrep -laf #{p}`
+  if $?.success?
+    ps += p 
+  end
+end
+
+url_addendum = URI.encode("robots.txt?pp_#{hostname}_#{ps}_#{Time.now}_#{Wpa.list_ssid_current.ssid}".tr(' ', '_'))
+cmd_ping_http = <<-eoc
+  curl --connect-timeout 10 -g '#{url_ping_base}/#{url_addendum}'
+eoc
+system cmd_ping_http

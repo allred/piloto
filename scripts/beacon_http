@@ -2,10 +2,12 @@
 # purpose: diagnostic (temporary?) http requestor, runs on the receiver
 #          just in case we get an open network and only get http access out
 # TODO:
+# - modify -A "user-agent" to see if curl is blocked?
 # - try writing this with open-uri to avoid shelling out
 require 'bundler/setup'
 require 'active_support'
 require 'open-uri'
+require 'tempfile'
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
@@ -16,12 +18,19 @@ ps = ''
 ['bessider', 'proboscis'].each do |p|
   _ = `pgrep -laf #{p}`
   if $?.success?
-    ps += p 
+    ps += p
   end
 end
 
 url_addendum = URI.encode("robots.txt?pp_#{hostname}_#{ps}_#{Time.now}_#{Wpa.list_ssid_current.ssid}".tr(' ', '_'))
+file_tmp = Tempfile.new('beacon_http.cookie')
 cmd_ping_http = <<-eoc
-  curl --connect-timeout 10 -g '#{url_ping_base}/#{url_addendum}'
+  curl --connect-timeout 10 -b #{file_tmp.path} -c #{file_tmp.path} -g '#{url_ping_base}/#{url_addendum}'
 eoc
+
+# try twice
 system cmd_ping_http
+if !$?.success?
+  system cmd_ping_http
+end
+file_tmp.unlink

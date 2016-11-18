@@ -5,6 +5,7 @@
 # operations
 * enable non-free in /etc/apt/sources.list
 * packages:
+** autossh
 ** ethtool
 ** firmware-realtek package (if you have a realtek chipset)
 ** gpsd gpsd-clients

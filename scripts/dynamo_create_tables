@@ -36,3 +36,56 @@ create_table('piloto_files_loaded', {
     write_capacity_units: 1,
   },
 })
+
+create_table('piloto_gps', {
+ attribute_definitions: [
+    {
+      attribute_name: "hostname",
+      attribute_type: "S", # S, N, B
+    },
+    {
+      attribute_name: "time",
+      attribute_type: "S",
+    },
+    {
+      attribute_name: "etime",
+      attribute_type: "N",
+    },
+  ],
+  key_schema: [
+    {
+      attribute_name: "hostname",
+      key_type: "HASH",
+    },
+    {
+      attribute_name: "time",
+      key_type: "RANGE",
+    },
+  ],
+  global_secondary_indexes: [
+    {
+      index_name: "etime-index",
+      key_schema: [
+        {
+          attribute_name: "time",
+          key_type: "HASH",
+        },
+        {
+          attribute_name: "etime",
+          key_type: "RANGE",
+        },
+      ],
+      projection: {
+        projection_type: "ALL",
+      },
+      provisioned_throughput: {
+        read_capacity_units: 1,
+        write_capacity_units: 1,
+      },
+    },
+  ],
+  provisioned_throughput: {
+    read_capacity_units: 1,
+    write_capacity_units: 1,
+  },
+})

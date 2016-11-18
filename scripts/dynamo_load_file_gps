@@ -5,9 +5,6 @@
 # local secondary index: create-time, same partition key 
 # aws dynamodb list-tables
 # aws dynamodb describe-table --table-name piloto_files_loaded
-# - id: uuid
-# -- host: hostid?
-# -- etime: etime
 # TODO:
 # - split into 25 item batches, load concurrently at limit
 # - if we just re-load all the data, we don't care about filenames
@@ -15,21 +12,17 @@
 # gps
 # - hostid-timestamp as key, and drop json in as the value
 # - this should be accurate enough for non sr-71s
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'date'
 require 'json'
-require 'open3'
-require 'securerandom'
-require 'rubygems'
-require 'bundler/setup'
-require 'aws-sdk'
+require 'piloto/aws'
 #STDOUT.sync = true
 
 @table_name = 'piloto_gps'
 @batches = [] # 25 items as of 2016-10-31
 
 def client
-  @c = Aws::DynamoDB::Client.new(region: 'us-east-1')
-  #require 'pry'; binding.pry
+  Piloto::Paws.new.dynamo
 end
 
 @c = client
@@ -67,7 +60,6 @@ f_gps.each_line do |line|
   end
   if parsed
     #h.merge!(host_time: "rp3-piloto-1_#{item['time']}")
-    #h.merge!(id: SecureRandom.uuid
     h.merge!(hostname: 'rp3-piloto-1')
     etime = DateTime.parse(h['time']).strftime('%Q')
     h.merge!(etime: etime.to_i)
@@ -90,11 +82,3 @@ r_desc = client.describe_table({
   table_name: @table_name,
 })
 puts [count: r_desc.table.item_count, status: r_desc.table.table_status]
-
-=begin
-#begin
-  #resp = dynamodb.list_tables
-  #puts resp.attributes
-#rescue Aws::DynamoDB::Errors::ServiceError
-#end
-=end

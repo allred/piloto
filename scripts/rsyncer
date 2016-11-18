@@ -1,3 +1,0 @@
-#!/bin/bash
-cd ~/m
-cd rp3-piloto-1 && rsync --timeout 60 -arvz -e "ssh -o StrictHostKeyChecking=no -p 2222" pi@localhost:gits/piloto/log .

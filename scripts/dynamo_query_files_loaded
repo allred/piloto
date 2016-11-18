@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'aws-sdk'
+
+def client
+  Aws::DynamoDB::Client.new(region: 'us-east-1')
+end
+
+count = 1
+@c = client
+@c.scan({ table_name: 'piloto_files_loaded' }).items.sort {|a,b| a['t_end'] <=> b['t_end'] }.each  do |r|
+  puts sprintf("%3s %30s %s %s", count, r['filename'], r['t_end'], r['filesize'].to_i)
+  count += 1
+end

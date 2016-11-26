@@ -32,16 +32,22 @@ def put_item(item)
     table_name: @table_name,
     item: item,
   })
-  return r_put_item
 end
 
-def batch_write_item(items)
+def batch_write_item(requests)
+  r_batch_write = @c.batch_write_item({
+    request_items: {
+      "#{@table_name}" => requests,
+    },
+  })
 end
 
-file_input = ARGV[0] || '/home/ubuntu/m/rp3-piloto-1/log/rp3-piloto-1-007f0101-09.gps'
+#file_input = ARGV[0] || '/home/ubuntu/m/rp3-piloto-1/log/rp3-piloto-1-007f0101-09.gps'
+file_input = ARGV[0] || '/home/ubuntu/m/rp3-piloto-1/log/rp3-piloto-1-007f0101-61.gps'
 f_gps = File.read(file_input)
 f_gps.gsub!(/\r\n?/, "\n")
-limit_batch = 25
+
+@limit_batch = 25
 @index_batch = 0
 count = 0
 f_gps.each_line do |line|
@@ -59,26 +65,67 @@ f_gps.each_line do |line|
   rescue
   end
   if parsed
-    #h.merge!(host_time: "rp3-piloto-1_#{item['time']}")
+    # skip non-GLL tags for now, ublox has some proprietary nmea sentences
+    # such as 0x0106 for nav solution info, which come in with dupe timestamps
+    # http://gpspp.sakura.ne.jp/rtklib/prog/ublox.c
+    next unless h['tag'] == 'GLL'
     h.merge!(hostname: 'rp3-piloto-1')
     etime = DateTime.parse(h['time']).strftime('%Q')
     h.merge!(etime: etime.to_i)
     count += 1
-    if (count % limit_batch) == 0
-      @index_batch += 1
+    unless @batches[@index_batch]
       @batches[@index_batch] = []
-      @batches[@index_batch].push h
     end
-    r_put = put_item(h)
+    @batches[@index_batch].push({put_request: {item: h}})
+    if (count % @limit_batch) == 0
+      @index_batch += 1
+    end
+    #r_put = put_item(h)
     #puts [b: @index_batch, c: count, h: h.to_json]
     #puts [c: count, r: r_put]
-    puts [c: count, h: h]
+    #puts [c: count, h: h]
   end
 end
 
-puts [batches: @batches.length]
+count_unprocessed_total = 0
+count_batches_processed = 0
+@batches.each do |b|
+  count_unprocessed = 0
+#puts [debug: b]
+  success = false
+  s_backoff = 1
+  # TODO: put this write in a loop
+  items_unprocessed = b
+  count_unprocessed = 0
+  until success
+    r = batch_write_item(items_unprocessed)
+    if r.unprocessed_items[@table_name]
+      count_unprocessed = r.unprocessed_items[@table_name].length
+      items_unprocessed = r.unprocessed_items[@table_name]
+      sleep s_backoff 
+      s_backoff *= 2
+    else
+      count_unprocessed = 0
+      success = true
+    end
+    puts [t: Time.now, batch: count_batches_processed, count_unprocessed: count_unprocessed]
+  end
+
+  count_batches_processed += 1
+  if r.unprocessed_items[@table_name]
+    count_unprocessed = r.unprocessed_items[@table_name].length
+    count_unprocessed_total += count_unprocessed
+  end
+end
 
 r_desc = client.describe_table({
   table_name: @table_name,
 })
-puts [count: r_desc.table.item_count, status: r_desc.table.table_status]
+puts [
+  table: @table_name,
+  batches: @batches.length,
+  unprocessed_items: count_unprocessed_total,
+  item_count: r_desc.table.item_count,
+  #status: r_desc.table.table_status,
+]
+abort if count_unprocessed_total > 0

@@ -79,3 +79,7 @@ https://localtunnel.me/
 * packages
 ** rtl-sdr sox
 * reboot to blacklist dvb_usb_rtl28xxu 
+
+# bluetooth
+* Jawbone by Era 00:21:3C:AF:1B:5E
+

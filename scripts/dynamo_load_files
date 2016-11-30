@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# purpose: iterate through gps files and load into db
+# TODO:
+# - make sure the latest file is older than delta t or it might be in-progress
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto/aws'
+require 'thor'
+
+def put_success(item)
+  @table_status_load_files = 'piloto_files_loaded'
+  client = Piloto::Paws.new.dynamo
+  r_put_item = client.put_item({
+    table_name: @table_status_load_files,
+    item: item,
+  })
+end
+
+class LoadGPS < Thor
+  desc "loadgps", "load gps files"
+  option :dir_files_gps
+  def loadgps
+    @dir_scripts = File.expand_path File.dirname(__FILE__)
+    client = Piloto::Paws.new.dynamo
+    path_loader = "#{@dir_scripts}/dynamo_load_file_gps" 
+    dir_files_gps = options[:dir_files_gps] || '/home/ubuntu/m/rp3-piloto-1/log'
+    Dir.chdir dir_files_gps
+    files = Dir.glob("*.gps").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
+    # skip the latest file for now, might be partially transferred 
+    _ = files.pop
+    files.each do |f|
+      file_loaded = false
+      if File.size(f) == 0
+        puts "empty file: #{f}"
+        next
+      end
+      r_scan = client.scan({
+        table_name: 'piloto_files_loaded',
+      })
+      r_scan.items.each do |r|
+        if f == r['filename']
+          file_loaded = true
+        end
+      end
+      if file_loaded
+        puts "already loaded: #{f}"
+        next
+      end
+      t_start = Time.now.to_s
+      cmd = <<-eoc
+        #{path_loader} #{f}
+      eoc
+      puts [c: cmd]
+      system cmd
+      if $?.success?
+       put_success({
+         filename: f,
+         t_start: t_start,
+         t_end: Time.now.to_s,
+         filesize: File.size(f),
+       })
+      end
+    end
+  end
+end
+LoadGPS.start(ARGV)

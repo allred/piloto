@@ -16,7 +16,8 @@ $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'date'
 require 'json'
 require 'piloto/aws'
-#STDOUT.sync = true
+require 'pp'
+STDOUT.sync = true
 
 @table_name = 'piloto_gps'
 @batches = [] # 25 items as of 2016-10-31
@@ -50,6 +51,7 @@ f_gps.gsub!(/\r\n?/, "\n")
 @limit_batch = 25
 @index_batch = 0
 count = 0
+dupe_check = {}
 f_gps.each_line do |line|
   # just throw away lines that don't parse
   # the file could end with indications of a hard stop, malformed json
@@ -69,13 +71,20 @@ f_gps.each_line do |line|
     # such as 0x0106 for nav solution info, which come in with dupe timestamps
     # http://gpspp.sakura.ne.jp/rtklib/prog/ublox.c
     next unless h['tag'] == 'GLL'
-    h.merge!(hostname: 'rp3-piloto-1')
+    hostname = 'rp3-piloto-1'
+    h.merge!(hostname: hostname)
     etime = DateTime.parse(h['time']).strftime('%Q')
     h.merge!(etime: etime.to_i)
     count += 1
     unless @batches[@index_batch]
       @batches[@index_batch] = []
     end
+    # there are dupes in the GLL tag space as well, due to duplicate timestamps
+    # TODO: see if we can get a more precise time from gpsd
+    if dupe_check["#{hostname}-#{h['time']}"]
+      next
+    end
+    dupe_check["#{hostname}-#{h['time']}"] = true 
     @batches[@index_batch].push({put_request: {item: h}})
     if (count % @limit_batch) == 0
       @index_batch += 1
@@ -94,11 +103,16 @@ count_batches_processed = 0
 #puts [debug: b]
   success = false
   s_backoff = 1
-  # TODO: put this write in a loop
   items_unprocessed = b
   count_unprocessed = 0
   until success
-    r = batch_write_item(items_unprocessed)
+    begin
+      r = batch_write_item(items_unprocessed)
+    rescue Aws::DynamoDB::Errors::ServiceError => e
+      pp items_unprocessed
+      pp e
+      abort "failure"
+    end
     if r.unprocessed_items[@table_name]
       count_unprocessed = r.unprocessed_items[@table_name].length
       items_unprocessed = r.unprocessed_items[@table_name]

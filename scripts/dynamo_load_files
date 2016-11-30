@@ -3,6 +3,8 @@
 # TODO:
 # - make sure the latest file is older than delta t or it might be in-progress
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'bundler/setup'
+require 'active_support/time'
 require 'piloto/aws'
 require 'thor'
 
@@ -25,8 +27,13 @@ class LoadGPS < Thor
     dir_files_gps = options[:dir_files_gps] || '/home/ubuntu/m/rp3-piloto-1/log'
     Dir.chdir dir_files_gps
     files = Dir.glob("*.gps").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
-    # skip the latest file for now, might be partially transferred 
-    _ = files.pop
+
+    # skip the latest file if it's relatively new
+    # it might be being actively written to on the receiver
+
+    if File.mtime(files[-1]) > (Time.now - 7.days)
+      _ = files.pop
+    end
     files.each do |f|
       file_loaded = false
       if File.size(f) == 0

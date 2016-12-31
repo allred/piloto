@@ -10,6 +10,24 @@ require 'geocluster'
 require 'ruby_kml'
 require 'thor'
 
+# purpose: skip waypoints inside a box
+
+def skippable?(lat, lon)
+  lat_nw = 40.7147
+  lon_nw = -73.941989
+  lat_ne = 40.71444
+  lon_ne = -73.935273
+  lat_sw = 40.712049
+  lon_sw = -73.940744
+  lat_se = 40.713399
+  lon_se = -73.934822
+  if (lat > lat_sw && lat < lat_nw && lon > lon_ne && lon > lon_nw)
+    return true
+  else
+    return false
+  end
+end
+
 class GenKML < Thor
   desc "genkml", "genkml"
   option :dir_files_gps
@@ -35,6 +53,9 @@ class GenKML < Thor
         a_file_gps = Piloto.gps_to_array(f)
         count_files += 1
         a_file_gps.each do |h|
+          if skippable?(h['lat'], h['lon'])
+            next
+          end
           a_gps.push [
             h['lat'], h['lon']
           ]
@@ -69,5 +90,6 @@ class GenKML < Thor
     STDERR.puts kml.render
     puts "#{Time.now} kml done"
   end
+
 end
 GenKML.start(ARGV)

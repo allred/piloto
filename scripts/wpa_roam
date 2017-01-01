@@ -37,22 +37,16 @@ def ping
   return $?
 end
 
-# purpose: add and enable a wifi network, test, remove if bogus
-
-def provisional_add(ssid)
-end
-
-#require 'pry';binding.pry
 h_ssid_current = Wpa.list_ssid_current
 ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
 ping_success = ping.success?
 
-@h_log['a'] = []
+@h_log['enb'] = []
 @h_log['p'] = ping_success
 @h_log['s'] = ssid_current
 @h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
-@h_log['u'] = `uptime -s`.chomp
-@h_log['x'] = []
+@h_log['up'] = `uptime -s`.chomp
+@h_log['dis'] = []
 
 ssids_ess = []
 ssids_skipped_regex = []
@@ -101,9 +95,9 @@ Wpa.wpa.scan_results.each do |r|
 
   ssids_ess.push r.ssid
 end
-@h_log['re'] = ssids_skipped_regex.length
-@h_log['sk'] = count_ssids_skipped
-@h_log['e'] = ssids_ess
+@h_log['rgx'] = ssids_skipped_regex.length
+@h_log['skp'] = count_ssids_skipped
+@h_log['ess'] = ssids_ess
 
 # remove the current open network if we still don't have internetz
 # there could be timing problems here, need to test it
@@ -115,7 +109,7 @@ if !ping.success?
     break unless ssid_current
     if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
       system "wpa_cli disable_network #{ssid_current.network_id}"
-      @h_log['x'].push(ssid_current.ssid)
+      @h_log['dis'].push(ssid_current.ssid)
     end
   end
 end
@@ -130,10 +124,10 @@ if ssids_ess.length > 0 && !ping_success
     Wpa.wpa.set_network(network_id, "ssid", s)
     Wpa.wpa.set_network(network_id, "key_mgmt", :NONE)
     Wpa.wpa.enable_network(network_id)
-    @h_log['a'].push(s)
+    @h_log['enb'].push(s)
   end
 end
 
 if ssids_ess.length > 0
-  puts @h_log.to_json
+  Piloto.logger.info @h_log.to_json
 end

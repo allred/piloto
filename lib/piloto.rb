@@ -1,6 +1,7 @@
 # purpose: piloto core
 require 'bundler/setup'
 require 'json'
+require 'syslog/logger'
 require 'wpa_cli_ruby'
 
 module Wpa
@@ -39,6 +40,7 @@ module Wpa
 end
 
 class Piloto
+  @log = Syslog::Logger.new File.basename($0)
 
   # purpose: returns an array of hashes representing an airodump gps file
 
@@ -60,6 +62,10 @@ class Piloto
       end
     end
     return output
+  end
+
+  def self.logger
+    @log
   end
 
 end

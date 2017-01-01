@@ -45,7 +45,7 @@ ping_success = ping.success?
 @h_log['p'] = ping_success
 @h_log['s'] = ssid_current
 @h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
-@h_log['u'] = `uptime -s`.chomp
+@h_log['up'] = `uptime -s`.chomp
 @h_log['dis'] = []
 
 ssids_ess = []
@@ -129,5 +129,5 @@ if ssids_ess.length > 0 && !ping_success
 end
 
 if ssids_ess.length > 0
-  puts @h_log.to_json
+  Piloto.logger.info @h_log.to_json
 end

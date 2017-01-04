@@ -13,15 +13,15 @@ require 'thor'
 # purpose: skip waypoints inside a box
 
 def skippable?(lat, lon)
-  lat_nw = 40.7147
-  lon_nw = -73.941989
+  lat_nw = 40.714
+  lon_nw = -73.951
   lat_ne = 40.71444
-  lon_ne = -73.935273
-  lat_sw = 40.712049
-  lon_sw = -73.940744
+  lon_ne = -73.935
+  lat_sw = 40.711
+  lon_sw = -73.951
   lat_se = 40.713399
   lon_se = -73.934822
-  if (lat > lat_sw && lat < lat_nw && lon > lon_ne && lon > lon_nw)
+  if (lat >= lat_sw && lat <= lat_nw && lon <= lon_ne && lon >= lon_nw)
     return true
   else
     return false

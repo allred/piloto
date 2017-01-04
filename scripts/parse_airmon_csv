@@ -5,7 +5,7 @@
 # - try using redis hashes
 require 'json'
 
-path_file_parse = '/home/mallred/tmp/rp3-piloto-1/log/rp3-piloto-1-007f0101-22.csv'
+path_file_parse = "#{ENV['HOME']}/m/rp3-piloto-1/log/rp3-piloto-1-007f0101-22.csv"
 
 File.open(path_file_parse, 'r') do |f|
   mode = 'ssid'

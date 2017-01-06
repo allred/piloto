@@ -42,6 +42,12 @@ end
 class Piloto
   @log = Syslog::Logger.new File.basename($0)
 
+  def self.cpu_temp
+    temp_f = File.read('/sys/class/thermal/thermal_zone0/temp').chomp.to_i / 1000 + 32
+    temp_f *= (9.0 / 5.0)
+    temp_f = sprintf("%.0f", temp_f)
+  end
+
   # purpose: returns an array of hashes representing an airodump gps file
 
   def self.gps_to_array(path_file_gps)
@@ -67,5 +73,6 @@ class Piloto
   def self.logger
     @log
   end
+
 
 end

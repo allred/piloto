@@ -41,9 +41,7 @@ cmds_watch = [
 
 runonce = true 
 until !runonce
-  temp_f = File.read('/sys/class/thermal/thermal_zone0/temp').chomp.to_i / 1000 + 32
-  temp_f *= (9.0 / 5.0) 
-  temp_f = sprintf("%.0f", temp_f)
+  temp_f = Piloto.cpu_temp
   delay ? system("clear") : nil
   opts_lolcat = {
     :freq => 0.1,

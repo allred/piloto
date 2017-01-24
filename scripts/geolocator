@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+require 'rest-client'
+
+def google_geo
+  payload = {
+    considerIp: false, # defaults to true
+    wifiAccessPoints: [
+      {
+        macAddress: 'EC:08:6B:3A:B4:B2',
+      },
+      {
+        macAddress: 'f8:1e:df:f8:e3:23',
+      },
+    ],
+  }
+  headers = {content_type: :json, accept: :json}
+  response = Google.geolocate(payload, headers)
+  puts response
+end
+
+if Piloto.ping.success?
+  google_geo
+else
+  puts "not online"
+end

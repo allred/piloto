@@ -4,6 +4,19 @@ require 'json'
 require 'syslog/logger'
 require 'wpa_cli_ruby'
 
+module Google
+  @url_google_geo = "https://www.googleapis.com/geolocation/v1/geolocate?key=#{ENV['PILOTO_GOOGLE_MAPS_API_KEY']}"
+
+  def Google.geolocate(payload, headers)
+    response = nil
+    begin
+      response = RestClient.post(@url_google_geo, payload.to_json, headers)
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
+    end
+  end
+end
+
 module Wpa
   @wpa = nil 
   @flag_current = '[CURRENT]'
@@ -40,6 +53,7 @@ module Wpa
 end
 
 class Piloto
+  @host_ping = ENV['PILOTO_HOST_PING'] || 'google.com'
   @log = Syslog::Logger.new File.basename($0)
 
   def self.cpu_temp
@@ -74,5 +88,9 @@ class Piloto
     @log
   end
 
+  def self.ping
+    _ = `ping -c 1 #{@host_ping} > /dev/null 2>&1`
+    return $?
+  end
 
 end

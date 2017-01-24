@@ -1,27 +1,66 @@
 #!/usr/bin/env ruby
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'gpsd_client'
 require 'piloto'
 require 'rest-client'
 
-def google_geo
-  payload = {
-    considerIp: false, # defaults to true
-    wifiAccessPoints: [
-      {
-        macAddress: 'EC:08:6B:3A:B4:B2',
-      },
-      {
-        macAddress: 'f8:1e:df:f8:e3:23',
-      },
-    ],
-  }
-  headers = {content_type: :json, accept: :json}
-  response = Google.geolocate(payload, headers)
-  puts response
+def gps_geo
+  pos = nil
+  client = GpsdClient::Gpsd.new
+  client.start
+  if client.started?
+    # sometimes this explodes due to nilclass error, need to fix
+    begin
+      pos = client.get_position
+    end
+  end
+  client.stop
+  return pos
 end
 
-if Piloto.ping.success?
-  google_geo
-else
-  puts "not online"
+def google_geo(payload)
+  headers = {content_type: :json, accept: :json}
+  response = Google.geolocate(payload, headers)
+end
+
+# purpose: compile a google-api-friendly list of APs
+
+def scan_ssids
+  wifi_access_points = []
+  Wpa.wpa.scan
+  Wpa.wpa.scan_results.each do |r|
+    if r.bssid
+      ap = {
+        age: 0,
+        macAddress: r.bssid,
+        signalStrength: r.signal_level,
+      }
+      wifi_access_points.push(ap)
+    end
+  end
+  return wifi_access_points
+end
+
+have_geo = false
+output = {}
+
+gps_position = gps_geo
+if gps_position[:lat]
+  have_geo = true
+  output.merge!({mode: 'gps', data: gps_position})
+elsif !have_geo && Piloto.ping.success?
+  wifi_access_points = scan_ssids
+  if wifi_access_points.length > 0
+    payload = {
+      considerIp: false, # defaults to true
+      wifiAccessPoints: wifi_access_points,
+    }
+    result = google_geo(payload)
+    have_geo = true
+    output.merge!({mode: 'google', data: JSON.parse(result)})
+  end
+end
+if have_geo
+  output.merge!({time: Time.now})
+  puts output.to_json
 end

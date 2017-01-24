@@ -11,8 +11,9 @@ module Google
     response = nil
     begin
       response = RestClient.post(@url_google_geo, payload.to_json, headers)
+      return response
     rescue RestClient::ExceptionWithResponse => e
-      puts e.response
+      return e.response
     end
   end
 end

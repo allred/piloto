@@ -14,7 +14,7 @@ text_espeak = ''
 
 if client.started?
   pos = client.get_position
-  puts pos
+  #puts pos
   if pos[:lat] && !File.exist?(path_file_gps_lock)
     File.write(path_file_gps_lock, '')
     text_espeak += " gps lock"
@@ -34,7 +34,7 @@ end
 # audio output
 
 if !text_espeak.empty?
-  puts text_espeak
+  Piloto.logger.info text_espeak
   cmd_espeak = <<-eoc
     espeak "#{text_espeak}" 2>/dev/null
   eoc

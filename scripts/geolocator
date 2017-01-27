@@ -69,5 +69,5 @@ if have_geo
   output.merge!({time: Time.now})
   output_log = output.to_json
   @geolog << ("#{output_log}\n")
-  puts output_log
+  #puts output_log
 end

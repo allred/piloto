@@ -9,6 +9,7 @@
 ** ethtool
 ** firmware-realtek package (if you have a realtek chipset)
 ** gpsd gpsd-clients
+** libbluetooth-dev
 ** libnl-3-dev
 ** libnl-gen1-3-dev
 ** libpcap-dev
@@ -82,4 +83,6 @@ https://localtunnel.me/
 
 # bluetooth
 * Jawbone by Era 00:21:3C:AF:1B:5E
+* bluelog -vtn
+* bluetoothctl devices
 

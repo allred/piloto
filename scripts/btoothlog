@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# purpose: scans bluetooth
+# see https://github.com/MS3FGX/Bluelog
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+
+dir_scripts = File.expand_path File.dirname(__FILE__)
+dir_logs = "#{dir_scripts}/../log"
+
+Dir.chdir(dir_logs)
+cmd = <<-eoc
+  bluelog -tn
+eoc
+sleep(30 + rand(20))
+system cmd
+

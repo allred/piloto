@@ -1,7 +1,7 @@
 #!/bin/bash
 LIMIT_WAYPOINTS=900000
-DIR_PILOTO="/home/ubuntu/gits/piloto"
-DIR_FILES_GPS="/home/ubuntu/m/rp3-piloto-1/log"
+DIR_PILOTO="$HOME/gits/piloto"
+DIR_FILES_GPS="$HOME/m/rp3-piloto-1/log"
 FILE_OUTPUT="/var/www/presence/public/piloto.kml"
 FILE_TMP="/tmp/piloto.kml"
 

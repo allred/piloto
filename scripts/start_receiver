@@ -23,4 +23,4 @@ until monitoring
 end
 puts "monitoring!"
 system "#{@dir_scripts}/goprobo > /dev/null 2>&1"
-system "#{@dir_scripts}/gobessi > /dev/null 2>&1"
+#system "#{@dir_scripts}/gobessi > /dev/null 2>&1"

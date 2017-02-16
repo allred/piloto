@@ -63,6 +63,16 @@ class Piloto
     temp_f = sprintf("%.0f", temp_f)
   end
 
+  def self.dir_log
+    dir_lib = File.expand_path File.dirname(__FILE__)
+    "#{dir_lib}/../log"
+  end
+
+  def self.dir_scripts
+    dir_lib = File.expand_path File.dirname(__FILE__)
+    "#{dir_lib}/../scripts"
+  end
+
   # purpose: returns an array of hashes representing an airodump gps file
 
   def self.gps_to_array(path_file_gps)

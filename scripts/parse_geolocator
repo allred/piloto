@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+Dir.chdir "#{Piloto.dir_log}/geolocator"
+files = Dir.glob("*.log").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
+file_latest = files.pop
+system "tail -n 1 #{file_latest}".chomp

@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# purpose: ensure that an interface is in monitor mode
+# then start other processes 
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+@dir_scripts = File.expand_path File.dirname(__FILE__)
+
+def start_airmon
+  system "#{@dir_scripts}/start_airmon.rb"
+end
+
+monitoring = false
+until monitoring
+  devices_monitoring = `#{@dir_scripts}/list_monitoring`
+  if devices_monitoring != ''
+    monitoring = true
+  else
+    puts "not monitoring, starting airmon"
+    start_airmon
+    sleep 10
+  end
+end
+puts "monitoring!"
+system "#{@dir_scripts}/goprobo > /dev/null 2>&1"
+#system "#{@dir_scripts}/gobessi > /dev/null 2>&1"

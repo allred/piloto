@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # purpose: ssh into pilotos, generate a web page to display general status
 # TODO: arg for output file path 
+require 'json'
 require 'tempfile'
 
 file_output = '/var/www/presence/public/pi.html'
@@ -24,10 +25,22 @@ cmds_connect.each do |c|
   end
   html_status += output
   html_status += '</pre>'
-  output =~ /Z,(.*)/
-  latlong = $1
-  if latlong
-    html_status += %Q(<iframe width="100%" src="https://maps.google.com/maps?q=#{latlong}&amp;output=embed"></iframe>)
+  output =~ /(\{"mode.*)/
+  json_geolocator = $1
+  if json_geolocator 
+    begin
+      data_geolocator = JSON.parse(json_geolocator)
+      data = data_geolocator['data']
+      if data['location']
+        lat = data['location']['lat']
+        lon = data['location']['lng']
+      else
+        lat = data['lat']
+        lon = data['lon']
+      end
+      latlong = "#{lat},#{lon}"
+      html_status += %Q(<iframe width="100%" src="https://maps.google.com/maps?q=#{latlong}&amp;output=embed"></iframe>)
+    end
   end
 end
 

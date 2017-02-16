@@ -9,6 +9,7 @@
 ** ethtool
 ** firmware-realtek package (if you have a realtek chipset)
 ** gpsd gpsd-clients
+** libbluetooth-dev
 ** libnl-3-dev
 ** libnl-gen1-3-dev
 ** libpcap-dev
@@ -91,3 +92,5 @@ https://localtunnel.me/
 * sudo hciconfig -a
 * http://raspberrypi.stackexchange.com/questions/639/how-to-get-pulseaudio-running
 * http://youness.net/raspberry-pi/bluetooth-headset-raspberry-pi
+* bluelog -vtn
+* bluetoothctl devices

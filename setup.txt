@@ -80,9 +80,17 @@ https://localtunnel.me/
 * packages
 ** rtl-sdr sox
 * reboot to blacklist dvb_usb_rtl28xxu 
+* jack
 
-# bluetooth
+# bluetooth / sound
+* aplay -l
+* setting it up via the GUI was easier, still had to start pulseaudio manually 
 * Jawbone by Era 00:21:3C:AF:1B:5E
+* bluetoothctl
+* pulseaudio --log-level=debug --log-target=syslog --system
+** paplay
+* sudo hciconfig -a
+* http://raspberrypi.stackexchange.com/questions/639/how-to-get-pulseaudio-running
+* http://youness.net/raspberry-pi/bluetooth-headset-raspberry-pi
 * bluelog -vtn
 * bluetoothctl devices
-

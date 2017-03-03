@@ -1,10 +1,20 @@
-require 'minitest/autorun'
-require_relative '../lib/piloto'
+require_relative 'spec_helper'
+require 'piloto'
 
 class PilotoTest < Minitest::Test
-  def test_one
-    refute true == nil
-    assert true != nil
+  def setup
+  end
+
+  def test_piloto
+    assert Piloto.dir_log != nil
+  end
+
+  def test_ruby_scripts_compile
+    Dir.glob('scripts/*') do |s|
+      if File.stat(s).executable? && File.open(s, &:gets) =~ /ruby/
+        rval = %x(ruby -c #{s})
+        assert $?.success? == true
+      end
+    end
   end
 end
-

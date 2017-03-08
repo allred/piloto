@@ -17,4 +17,11 @@ class PilotoTest < Minitest::Test
       end
     end
   end
+
+  def test_migrations_compile
+    Dir.glob('db/migrations/*') do |s|
+      rval = %x(ruby -c #{s})
+      assert $?.success? == true
+    end
+  end
 end

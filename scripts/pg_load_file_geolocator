@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require 'active_record'
+require 'pg'
+require_relative '../environment'
+
+file_input = ARGV[0] || "#{ENV['HOME']}/m/rp3-piloto-1/log/geolocator/geolocator.2017-01-31.log"
+
+stats = {
+  records: 0,
+  success: 0,
+  failure: 0,
+}
+
+File.open(file_input) do |f|
+  connection = ActiveRecord::Base.connection.raw_connection
+  sql = <<-eos
+    insert into geolocator (data)
+      values ($1)
+      on conflict (data)
+      do nothing
+  eos
+  connection.prepare('q1', sql)
+  header = f.gets
+  while line = f.gets
+    result = connection.exec_prepared('q1', [line])
+    stats[:records] += 1
+    puts result.res_status(result.result_status)
+    puts PG::Constants::PGRES_COMMAND_OK
+    if result.result_status == PG::Constants::PGRES_COMMAND_OK
+      stats[:success] += 1
+    else
+      stats[:failure] += 1
+    end
+  end
+end
+puts stats.to_json

@@ -1,8 +1,8 @@
 #!/bin/bash
-SCRIPTDIR=/home/pi/gits/piloto/scripts
-LOGDIR=/home/pi/log
+SCRIPTDIR=$HOME/gits/piloto/scripts
+LOGDIR=$HOME/log
 
-cd /home/pi/gits/piloto 
+cd $HOME/gits/piloto
 source $HOME/.rvm/scripts/rvm
 date
 # maybe try -h 100 (for gnu screen)?

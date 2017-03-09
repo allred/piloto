@@ -4,7 +4,7 @@
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
-@dir_scripts = File.expand_path File.dirname(__FILE__)
+@dir_scripts = Piloto.dir_scripts
 
 def start_airmon
   system "#{@dir_scripts}/start_airmon.rb"
@@ -22,5 +22,5 @@ until monitoring
   end
 end
 puts "monitoring!"
-system "#{@dir_scripts}/goprobo > /dev/null 2>&1"
-#system "#{@dir_scripts}/gobessi > /dev/null 2>&1"
+system "#{@dir_scripts}/goprobo > #{ENV['HOME']}/log/goprobo.log 2>&1"
+system "#{@dir_scripts}/gobessi > /dev/null 2>&1"

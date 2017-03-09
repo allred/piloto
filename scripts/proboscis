@@ -11,15 +11,13 @@ require 'open3'
 require 'piloto'
 STDOUT.sync = true
 
-dir_scripts = File.expand_path File.dirname(__FILE__)
+dir_scripts = Piloto.dir_scripts
 dir_output = "#{dir_scripts}/../log"
 Dir.chdir dir_output
 hostid = Piloto.hostid
 hostname = Piloto.hostname
 fileid = "#{hostname}-#{hostid}"
 
-system "sudo service gpsd restart"
-# TODO: go monitor mode?
 devices_monitoring = `#{dir_scripts}/list_monitoring`.split("\n")
 device_monitoring = ARGV[0] || devices_monitoring.kind_of?(Array) ? devices_monitoring[0] : devices_monitoring
 
@@ -35,7 +33,6 @@ eoc
 cmd_probe = <<-eoc
   sudo airodump-ng --gpsd -w #{fileid} --output-format csv #{device_monitoring} > /dev/null 2>&1
 eoc
-  #sudo airodump-ng -g -w airodump --output-format pcap #{device_monitoring}
 puts cmd_probe
 if device_monitoring
   system cmd_probe

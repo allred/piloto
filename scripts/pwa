@@ -29,7 +29,7 @@ dir_scripts = File.expand_path File.dirname(__FILE__)
 
 cmds_watch = [
   %Q!ifconfig | grep mon!,
-  %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | head -n 5!,
+  %Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | grep -v ^d | head -n 5!,
   %Q!tail -n 1 #{dir_scripts}/../log/wpa_roam.log!,
   #%Q!#{dir_scripts}/parse_gps | tail -n 2!,
   %Q!tail -n 1 $(ls -t #{dir_scripts}/../log/geolocator/*.log | head -n 1)!,

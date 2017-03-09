@@ -129,5 +129,7 @@ if ssids_ess.length > 0 && !ping_success
 end
 
 if ssids_ess.length > 0
-  Piloto.logger.info @h_log.to_json
+  output = @h_log.to_json
+  Piloto.logger.info output
+  puts output
 end

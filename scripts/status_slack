@@ -25,7 +25,9 @@ payload = {
 output = {
   t: "#{Time.now}",
 }
-if Piloto.ping.success? && Piloto.ping.success? && !File.exist?(path_file_online_lock)
+
+ping_success = Piloto.ping.success?
+if ping_success && !File.exist?(path_file_online_lock)
   File.write(path_file_online_lock, '')
   response = Slack.send_payload({
     payload: payload,
@@ -36,7 +38,7 @@ if Piloto.ping.success? && Piloto.ping.success? && !File.exist?(path_file_online
     body: response.body,
     status: "came online",
   })
-elsif File.exist?(path_file_online_lock)
+elsif ping_success && File.exist?(path_file_online_lock)
   output.merge!({
     status: "already online",
   })

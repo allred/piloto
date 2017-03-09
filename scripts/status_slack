@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+# purpose: send some notifications to slack, ie being online, etc
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+path_file_online_lock = '/tmp/online.lock'
+url_webhook = ENV['PILOTO_SLACK_WEBHOOK_URL']
+
+output_pwa = `#{Piloto.dir_scripts}/pwa`.chomp
+
+text = <<-eot
+```
+#{output_pwa}
+```
+eot
+
+payload = {
+  text: text ,
+}.to_json
+
+if Piloto.ping.success? && Piloto.ping.success? && !File.exist?(path_file_online_lock)
+  File.write(path_file_online_lock, '')
+  response = Slack.send_payload({
+    payload: payload,
+    url_webhook: url_webhook,
+  })
+  output = {
+    payload: payload,
+    body: response.body,
+  }.to_json
+  puts output
+else
+  File.unlink(path_file_online_lock)
+end

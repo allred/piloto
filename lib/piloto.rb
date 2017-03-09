@@ -1,7 +1,10 @@
 # purpose: piloto core
 require 'bundler/setup'
 require 'json'
+require 'net/http'
+require 'net/https'
 require 'syslog/logger'
+require 'uri'
 require 'wpa_cli_ruby'
 
 module Google
@@ -15,6 +18,20 @@ module Google
     rescue RestClient::ExceptionWithResponse => e
       return e.response
     end
+  end
+end
+
+module Slack
+  @url_webhook = ENV['PILOTO_SLACK_WEBHOOK_URL']
+
+  def Slack.send_payload(args)
+    uri = URI.parse(args[:url_webhook])
+    http = Net::HTTP.new(uri.host, 443)
+    http.use_ssl = true
+    http_verify_mode = OpenSSL::SSL::VERIFY_NONE
+    req = Net::HTTP::Post.new(args[:url_webhook])
+    req.set_form_data({payload: args[:payload]})
+    http.request(req)
   end
 end
 

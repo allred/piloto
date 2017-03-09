@@ -23,4 +23,6 @@ until monitoring
 end
 puts "monitoring!"
 system "#{@dir_scripts}/goprobo > #{ENV['HOME']}/log/goprobo.log 2>&1"
-system "#{@dir_scripts}/gobessi > /dev/null 2>&1"
+if ARGV[0] == 'b'
+  system "#{@dir_scripts}/gobessi > /dev/null 2>&1"
+end

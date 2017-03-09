@@ -95,6 +95,14 @@ class Piloto
     return output
   end
 
+  def self.hostid
+    `cat /etc/machine-id`.chomp[0..7] || `hostid`.chomp
+  end
+
+  def self.hostname
+    `hostname`.chomp
+  end
+
   def self.logger
     @log
   end

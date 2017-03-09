@@ -12,6 +12,7 @@ stats = {
 }
 
 File.open(file_input) do |f|
+  stats[:file] = file_input
   connection = ActiveRecord::Base.connection.raw_connection
   sql = <<-eos
     insert into geolocator (data)
@@ -24,8 +25,6 @@ File.open(file_input) do |f|
   while line = f.gets
     result = connection.exec_prepared('q1', [line])
     stats[:records] += 1
-    puts result.res_status(result.result_status)
-    puts PG::Constants::PGRES_COMMAND_OK
     if result.result_status == PG::Constants::PGRES_COMMAND_OK
       stats[:success] += 1
     else

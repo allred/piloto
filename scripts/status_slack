@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 # purpose: send some notifications to slack, ie being online, etc
+# probably want to add a random pre-sleep in cron...
+#  sleep $[ ( $RANDOM % 10 )  + 1 ]s
+# to avoid a micro ping storm
+
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
 
@@ -18,17 +22,28 @@ payload = {
   text: text ,
 }.to_json
 
+output = {
+  t: "#{Time.now}",
+}
 if Piloto.ping.success? && Piloto.ping.success? && !File.exist?(path_file_online_lock)
   File.write(path_file_online_lock, '')
   response = Slack.send_payload({
     payload: payload,
     url_webhook: url_webhook,
   })
-  output = {
+  output.merge!({
     payload: payload,
     body: response.body,
-  }.to_json
-  puts output
+    status: "came online",
+  })
+elsif File.exist?(path_file_online_lock)
+  output.merge!({
+    status: "already online",
+  })
 else
+  output.merge!({
+    status: "went offline",
+  })
   File.unlink(path_file_online_lock)
 end
+puts output.to_json

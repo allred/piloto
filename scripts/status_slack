@@ -10,12 +10,17 @@ require 'piloto'
 path_file_online_lock = '/tmp/online.lock'
 url_webhook = ENV['PILOTO_SLACK_WEBHOOK_URL']
 
-output_pwa = `#{Piloto.dir_scripts}/pwa`.chomp
+temp_f = Piloto.cpu_temp
+ps = ''
+['bessider', 'proboscis'].each do |p|
+  _ = `pgrep -laf #{p}`
+  if $?.success?
+    ps += p
+  end
+end
 
 text = <<-eot
-```
-#{output_pwa}
-```
+#{Wpa.list_ssid_current.ssid} #{`uptime -p`.chomp} #{temp_f}F #{ps} #{`hostname`.chomp}
 eot
 
 payload = {
@@ -42,7 +47,7 @@ elsif ping_success && File.exist?(path_file_online_lock)
   output.merge!({
     status: "already online",
   })
-else
+elsif !Piloto.ping.success?
   output.merge!({
     status: "went offline",
   })

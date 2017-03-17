@@ -19,8 +19,9 @@ ps = ''
   end
 end
 
+ssid_current = Wpa.list_ssid_current.nil? ? '' : Wpa.list_ssid_current.ssid
 text = <<-eot
-#{Wpa.list_ssid_current.ssid} #{`uptime -p`.chomp} #{temp_f}F #{ps} #{`hostname`.chomp}
+#{ssid_current} #{ps} #{temp_f}F #{`uptime -p`.chomp} #{`hostname`.chomp}
 eot
 
 payload = {

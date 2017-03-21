@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# purpose: iterate through files and load into db
+# TODO:
+# - make sure the latest file is older than delta t or it might be in-progress
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'bundler/setup'
+require 'active_support/time'
+require 'thor'
+
+class LoadGeolocator < Thor
+  desc "loadgeolocator", "load geolocator files"
+  option :dir_files_gps
+  def loadgeolocator
+    @dir_scripts = File.expand_path File.dirname(__FILE__)
+    path_loader = "#{@dir_scripts}/pg_load_file_geolocator"
+    dir_files = options[:dir_files_gps] || "#{ENV['HOME']}/m/rp3-piloto-1/log/geolocator"
+    Dir.chdir dir_files
+    files = Dir.glob("*.log").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
+
+    # skip the latest file if it's relatively new
+    # it might be being actively written to on the receiver
+
+    if File.mtime(files[-1]) > (Time.now - 7.days)
+      _ = files.pop
+    end
+    files.each do |f|
+      file_loaded = false
+      if File.size(f) == 0
+        puts "empty file: #{f}"
+        next
+      end
+      t_start = Time.now.to_s
+      cmd = <<-eoc
+        #{path_loader} #{f}
+      eoc
+      puts [c: cmd.strip]
+      system cmd
+      if $?.success?
+      end
+    end
+  end
+end
+LoadGeolocator.start(ARGV)

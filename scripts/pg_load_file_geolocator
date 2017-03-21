@@ -11,19 +11,31 @@ stats = {
   failure: 0,
 }
 
+def valid_json?(json)
+  begin
+    JSON.parse(json)
+  rescue
+    return false
+  end
+end
+
 File.open(file_input) do |f|
   stats[:file] = file_input
   connection = ActiveRecord::Base.connection.raw_connection
   sql = <<-eos
-    insert into geolocator (data)
-      values ($1)
+    insert into geolocator (tstamp, data)
+      values ($1, $2)
       on conflict (data)
       do nothing
   eos
   connection.prepare('q1', sql)
   header = f.gets
   while line = f.gets
-    result = connection.exec_prepared('q1', [line])
+    line_data = valid_json?(line)
+    next unless line_data 
+    tstamp = nil
+    tstamp = line_data['data']['time']
+    result = connection.exec_prepared('q1', [tstamp, line])
     stats[:records] += 1
     if result.result_status == PG::Constants::PGRES_COMMAND_OK
       stats[:success] += 1

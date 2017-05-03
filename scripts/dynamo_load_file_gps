@@ -86,6 +86,7 @@ f_gps.each_line do |line|
     end
     dupe_check["#{hostname}-#{h['time']}"] = true 
     @batches[@index_batch].push({put_request: {item: h}})
+    # check actual count here, push into batches array
     if (count % @limit_batch) == 0
       @index_batch += 1
     end
@@ -109,6 +110,7 @@ count_batches_processed = 0
     begin
       r = batch_write_item(items_unprocessed)
     rescue Aws::DynamoDB::Errors::ServiceError => e
+      puts "length: #{items_unprocessed.length}"
       pp items_unprocessed
       pp e
       abort "failure"

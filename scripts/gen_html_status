@@ -8,7 +8,7 @@ file_output = '/var/www/presence/public/pi.html'
 file_tmp = Tempfile.new('piloto_html')
 ssh_options = %q{ -o ConnectTimeout=10 }
 cmds_connect = [ 
-  %Q(ssh -p 2222 #{ssh_options} pi@localhost "export PATH=/sbin:/bin:/usr/bin:/usr/local/bin; . /home/pi/.rvm/environments/ruby-2.3.0 && /home/pi/gits/piloto/scripts/pwa"),
+  %Q(ssh -p 2222 #{ssh_options} pi@localhost "export PATH=/sbin:/bin:/usr/bin:/usr/local/bin; . /home/pi/.rvm/environments/ruby-2.4.0 && /home/pi/gits/piloto/scripts/pwa"),
 ]
 
 html_status = ''
@@ -25,7 +25,7 @@ cmds_connect.each do |c|
   end
   html_status += output
   html_status += '</pre>'
-  output =~ /(\{"mode.*)/
+  output =~ /(\{"hostid.*)/
   json_geolocator = $1
   if json_geolocator 
     begin

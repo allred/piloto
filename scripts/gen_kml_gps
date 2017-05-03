@@ -1,14 +1,26 @@
-#!/bin/bash
-LIMIT_WAYPOINTS=900000
-DIR_PILOTO="$HOME/gits/piloto"
-DIR_FILES_GPS="$HOME/m/rp3-piloto-1/log"
-FILE_OUTPUT="/var/www/presence/public/piloto.kml"
-FILE_TMP="/tmp/piloto.kml"
+#!/usr/bin/env ruby
+# purpose: wrap the kml generator to supply custom args, check for new files
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'bundler/setup'
+require 'active_support/time'
+
+limit_waypoints = 900000
+dir_piloto = "#{ENV['HOME']}/gits/piloto"
+dir_files_gps = "#{ENV['HOME']}/m/rp3-piloto-1/log"
+file_output = "/var/www/presence/public/piloto.kml"
+file_tmp = "/tmp/piloto.kml"
 
 # the following var is the output from: rvm env --path
-source $PILOTO_RVM_ENV
-echo "$0 $(date)"
-cd $DIR_PILOTO 
-$DIR_PILOTO/scripts/geo_cluster genkml --dir_files_gps $DIR_FILES_GPS --limit_waypoints $LIMIT_WAYPOINTS 2> $FILE_TMP \
-&& mv -v $FILE_TMP $FILE_OUTPUT
-echo "$0 $(date)"
+system("source #{ENV['PILOTO_RVM_ENV']}")
+puts "#{__FILE__} #{Time.now}"
+Dir.chdir(dir_piloto)
+
+# only run if new files are found
+files = Dir.glob("#{dir_files_gps}/*.gps").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
+mtime_newest_file = File.mtime(files[-1])
+if mtime_newest_file > (Time.now - 1.day)
+  system("#{dir_piloto}/scripts/geo_cluster genkml --dir_files_gps #{dir_files_gps} --limit_waypoints #{limit_waypoints} 2> #{file_tmp} && mv -v #{file_tmp} #{file_output}")
+else
+  puts "skipping run, newest file is #{mtime_newest_file}" 
+end
+puts "#{__FILE__} #{Time.now}"

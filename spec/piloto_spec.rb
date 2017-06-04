@@ -3,10 +3,12 @@ require 'piloto'
 
 class PilotoTest < Minitest::Test
   def setup
+    @piloto = Piloto.new
   end
 
   def test_piloto
     assert Piloto.dir_log != nil
+    assert Piloto.dir_scripts != nil
   end
 
   def test_ruby_scripts_compile

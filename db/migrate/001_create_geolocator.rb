@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require_relative '../../environment'
-class CreateGeolocator < ActiveRecord::Migration
+class CreateGeolocator < ActiveRecord::Migration[5.0]
   def up
     create_table :geolocator do |t|
       t.jsonb :data

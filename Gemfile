@@ -13,9 +13,10 @@ gem 'thor'
 gem 'wpa_cli_ruby'
 
 group :development do
+  gem 'byebug'
   gem 'guard'
   gem 'guard-minitest'
-  gem 'pry'
+  gem 'ruby-prof'
 end
 
 group :test do

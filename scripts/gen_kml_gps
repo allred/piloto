@@ -18,7 +18,7 @@ Dir.chdir(dir_piloto)
 # only run if new files are found
 files = Dir.glob("#{dir_files_gps}/*.gps").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
 mtime_newest_file = File.mtime(files[-1])
-if mtime_newest_file > (Time.now - 1.day)
+if mtime_newest_file > (Time.now - 1.day) || ARGV[0] == 'go'
   system("#{dir_piloto}/scripts/geo_cluster genkml --dir_files_gps #{dir_files_gps} --limit_waypoints #{limit_waypoints} 2> #{file_tmp} && mv -v #{file_tmp} #{file_output}")
 else
   puts "skipping run, newest file is #{mtime_newest_file}" 

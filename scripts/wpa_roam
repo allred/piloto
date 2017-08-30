@@ -29,24 +29,16 @@ require 'piloto'
 }x
 @h_log = {}
 
-# purpose: determine if we have internet connectivity
-#          there is probably a better way to do this
-
-def ping
-  _ = `ping -c 1 #{@host_ping} > /dev/null 2>&1`
-  return $?
-end
-
 h_ssid_current = Wpa.list_ssid_current
 ssid_current = h_ssid_current ? h_ssid_current['ssid'] : 'none'
-ping_success = ping.success?
+ping_success = Piloto.ping.success?
 
-@h_log['enb'] = []
-@h_log['p'] = ping_success
-@h_log['s'] = ssid_current
-@h_log['t'] = Time.now.strftime("%Y-%m-%d %H:%M")
-@h_log['up'] = `uptime -s`.chomp
-@h_log['dis'] = []
+@h_log['enabled'] = []
+@h_log['ping'] = ping_success
+@h_log['ssid'] = ssid_current
+@h_log['time'] = Time.now.strftime("%Y-%m-%d %H:%M")
+@h_log['uptime'] = `uptime -s`.chomp
+@h_log['disabled'] = []
 
 ssids_ess = []
 ssids_skipped_regex = []
@@ -95,8 +87,8 @@ Wpa.wpa.scan_results.each do |r|
 
   ssids_ess.push r.ssid
 end
-@h_log['rgx'] = ssids_skipped_regex.length
-@h_log['skp'] = count_ssids_skipped
+@h_log['regex'] = ssids_skipped_regex.length
+@h_log['skip'] = count_ssids_skipped
 @h_log['ess'] = ssids_ess
 
 # remove the current open network if we still don't have internetz
@@ -109,7 +101,7 @@ if !ping.success?
     break unless ssid_current
     if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
       system "wpa_cli disable_network #{ssid_current.network_id}"
-      @h_log['dis'].push(ssid_current.ssid)
+      @h_log['disabled'].push(ssid_current.ssid)
     end
   end
 end
@@ -124,7 +116,7 @@ if ssids_ess.length > 0 && !ping_success
     Wpa.wpa.set_network(network_id, "ssid", s)
     Wpa.wpa.set_network(network_id, "key_mgmt", :NONE)
     Wpa.wpa.enable_network(network_id)
-    @h_log['enb'].push(s)
+    @h_log['enabled'].push(s)
   end
 end
 

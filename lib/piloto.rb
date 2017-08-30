@@ -124,6 +124,9 @@ class Piloto
     @log
   end
 
+  # use system ping to send ICMP, ignore stdout
+  # return the Process::Status object
+
   def self.ping
     _ = `ping -c 1 #{@host_ping} > /dev/null 2>&1`
     return $?

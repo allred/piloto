@@ -94,12 +94,12 @@ end
 # remove the current open network if we still don't have internetz
 # there could be timing problems here, need to test it
 
-if !ping.success?
+if !Piloto.ping.success?
   ssid_current = Wpa.list_ssid_current
   Wpa.wpa.scan
   Wpa.wpa.scan_results.each do |r|
     break unless ssid_current
-    if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !ping.success?
+    if r.ssid == ssid_current.ssid && r.flags == '[ESS]' && !Piloto.ping.success?
       system "wpa_cli disable_network #{ssid_current.network_id}"
       @h_log['disabled'].push(ssid_current.ssid)
     end

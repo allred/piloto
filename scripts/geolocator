@@ -9,7 +9,7 @@ require 'rest-client'
 dir_scripts = File.expand_path File.dirname(__FILE__)
 #@geolog = Logger.new("#{dir_scripts}/../log/geolocator.log", 'daily')
 dir_log = "#{dir_scripts}/../log/geolocator"
-Dir.mkdir dir_log unless Dir.exists? dir_log
+Dir.mkdir dir_log unless Dir.exist? dir_log
 tstamp_day = Time.now.strftime("%Y-%m-%d")
 @geolog = Logger.new("#{dir_log}/geolocator.#{tstamp_day}.log") 
 

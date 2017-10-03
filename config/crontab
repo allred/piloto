@@ -1,0 +1,15 @@
+# key parts of the crontab, ie running rvm-dependent stuff, may look like
+
+SCRIPTDIR="/home/pi/gits/piloto/scripts"
+LOGDIR="/home/pi/log"
+PILOTO_RVM_ENV="/home/pi/.rvm/environments/ruby-2.4-2"
+
+@reboot $SCRIPTDIR/atun 2222 > $LOGDIR/atun.log 2>&1
+@reboot . $PILOTO_RVM_ENV && $SCRIPTDIR/start_receiver > $LOGDIR/start_receiver.log 2>&1
+@reboot . $PILOTO_RVM_ENV && $SCRIPTDIR/btoothlog > $LOGDIR/btoothlog.log 2>&1
+@reboot /bin/date > $LOGDIR/date.log 2>&1
+*/2 * * * * . $PILOTO_RVM_ENV && $SCRIPTDIR/wpa_roam > $PILOTO_DIR_LOG/wpa_roam.log 2>&1
+* * * * * . $PILOTO_RVM_ENV && $SCRIPTDIR/beacon_http > $LOGDIR/beacon_http.log 2>&1
+#* * * * * . $PILOTO_RVM_ENV && ruby -e 'sleep rand(5) + 1' && $SCRIPTDIR/status_audio > $LOGDIR/status_audio.log 2>&1
+*/5 * * * * . $PILOTO_RVM_ENV && ruby -e 'sleep rand(10) + 1' && $SCRIPTDIR/status_slack > $LOGDIR/status_slack.log 2>&1
+* * * * * . $PILOTO_RVM_ENV && $SCRIPTDIR/geolocator > $LOGDIR/geolocator.log 2>&1

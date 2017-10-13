@@ -2,32 +2,38 @@
 # purpose: POC for scanner
 # NOTE:
 # - run rtl_test to get parameter data for your hardware
+# - rtl_test -p to get PPM error value
 # - http://www.superkuh.com/rtlsdr.html
 # - https://www.reddit.com/r/RTLSDR/comments/2t7dlu/streaming_to_an_icecast_server/
+# - https://www.raspberrypi.org/forums/viewtopic.php?p=526013
 # - Rafael Micro R820T  24 - 1766 MHz (>1500 MHz is bad w/o tuner cooling)
 # - /usr/lib/x86_64-linux-gnu/bin/softfm -f 92.3M
 
-gain = 50          # 50 appears to be the max? see rtl_test output
+gain = '49.6'          # 50 appears to be the max? see rtl_test output
+ppm_error = 20
 sample_rate = '48k'
-squelch = 40
-squelch_delay = 1  # default is 20, number of triggers/hits before hopping
+squelch = 120 
+squelch_delay = 20  # default is 20, number of triggers/hits before hopping
 
 
+  #-f 476.6875M \ #
+  #-f 476.7875M \
+  #-f 476.7625M \
+  #-f 482.01875M \
+  #-f 485.01875M \
 cmd = <<-eoc
   sudo rtl_fm \
-  -f 476.7875M \
-  -f 476.7625M \
   -f 476.6875M \
-  -f 482.01875M \
-  -f 485.01875M \
+  -F 0 \
   -g #{gain} \
   -l #{squelch} \
   -M fm \
+  -p #{ppm_error} \
   -s #{sample_rate} \
-  -t #{squelch_delay} \
   | \
   aplay -r #{sample_rate} -f S16_LE -V mono
 eoc
+  #-t #{squelch_delay} \
   #-E deemp \
 
   #play -r #{sample_rate} -t raw -e signed -b 16 -c 1 -V4 -

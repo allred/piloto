@@ -11,7 +11,6 @@ module Google
   @url_google_geo = "https://www.googleapis.com/geolocation/v1/geolocate?key=#{ENV['PILOTO_GOOGLE_MAPS_API_KEY']}"
 
   def Google.geolocate(payload, headers)
-    response = nil
     begin
       response = RestClient.post(@url_google_geo, payload.to_json, headers)
       return response
@@ -102,10 +101,8 @@ class Piloto
       begin
         h = JSON.parse(line)
         parsed = true
-      rescue
       end
       if parsed
-        #puts [DEBUG: h]
         output.push h
       end
     end
@@ -123,6 +120,9 @@ class Piloto
   def self.logger
     @log
   end
+
+  # use system ping to send ICMP, ignore stdout
+  # return the Process::Status object
 
   def self.ping
     _ = `ping -c 1 #{@host_ping} > /dev/null 2>&1`

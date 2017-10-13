@@ -9,7 +9,7 @@ require 'rest-client'
 dir_scripts = File.expand_path File.dirname(__FILE__)
 #@geolog = Logger.new("#{dir_scripts}/../log/geolocator.log", 'daily')
 dir_log = "#{dir_scripts}/../log/geolocator"
-Dir.mkdir dir_log unless Dir.exists? dir_log
+Dir.mkdir dir_log unless Dir.exist? dir_log
 tstamp_day = Time.now.strftime("%Y-%m-%d")
 @geolog = Logger.new("#{dir_log}/geolocator.#{tstamp_day}.log") 
 
@@ -18,7 +18,8 @@ def gps_geo
   client = GpsdClient::Gpsd.new
   client.start
   if client.started?
-    # sometimes this explodes due to nilclass error, need to fix
+    # sometimes this explodes due to nilclass error, gpsd_client needs a fix
+    # trap this exception so we can move on to other methods of geolocation
     begin
       pos = client.get_position
     end
@@ -39,6 +40,9 @@ def scan_ssids
   Wpa.wpa.scan
   Wpa.wpa.scan_results.each do |r|
     if r.bssid
+
+      # this hash format should match google's accepted format
+
       ap = {
         age: 0,
         macAddress: r.bssid,
@@ -62,17 +66,20 @@ if gps_position[:lat]
   output.merge!({mode: 'gps', data: gps_position})
 elsif !have_geo && Piloto.ping.success?
   wifi_access_points = scan_ssids
+
+  # send data to google for geolocation
+
   if wifi_access_points.length >= @google_geolocation_api_wifi_min
     payload = {
       considerIp: true, # defaults to true
       wifiAccessPoints: wifi_access_points,
     }
     result = google_geo(payload)
-    h_data = JSON.parse(result)
-    unless h_data['error']
+    google_data = JSON.parse(result)
+    unless google_data['error']
       have_geo = true
     end
-    output.merge!({mode: 'google', data: h_data, wifi: wifi_access_points.length})
+    output.merge!({mode: 'google', data: google_data, wifi: wifi_access_points.length})
   end
 end
 if have_geo

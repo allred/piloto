@@ -15,6 +15,15 @@ sample_rate = '48k'
 squelch = 120 
 squelch_delay = 20  # default is 20, number of triggers/hits before hopping
 
+@device = 'fixme'
+case `hostname`.chomp
+  when "orcus"
+    @device = "plughw:CARD=PCH,DEV=0"
+  when "rp2-piloto-1"
+    @device = "plughw:CARD=ALSA,DEV=1"
+  else
+end
+
 
   #-f 476.6875M \ #
   #-f 476.7875M \
@@ -31,7 +40,7 @@ cmd = <<-eoc
   -p #{ppm_error} \
   -s #{sample_rate} \
   | \
-  aplay -r #{sample_rate} -f S16_LE -V mono
+  aplay -r #{sample_rate} -f S16_LE -V mono -D #{@device}
 eoc
   #-t #{squelch_delay} \
   #-E deemp \

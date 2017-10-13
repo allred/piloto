@@ -17,7 +17,7 @@ end
 puts "TUNNEL START #{Time.now}"
 system "/sbin/iwconfig"
 target_tunnel = ENV['PILOTO_HOST_TARGET_TUNNEL'] || "localhost"
-mailto = ENV['PILOTO_MAILTO_TUNNEL'] || "freebird@example.com"
+#mailto = ENV['PILOTO_MAILTO_TUNNEL'] || "freebird@example.com"
 # NOTE:
 # - we may want to add -o ConnectTimeout=1 or something similar
 cmd_tunnel = <<-eoc

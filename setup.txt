@@ -22,6 +22,9 @@
 * add atun to a @reboot line in crontab
 * setup ssmtp - http://www.sbprojects.com/projects/raspberrypi/exim4.php
 
+# reaper
+./db/migate/001_create_geolocator.rb up
+
 # dev
 * reaper should poll for pwa-lite
 ** don't parse anything 

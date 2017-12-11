@@ -29,6 +29,7 @@ dir_scripts = File.expand_path File.dirname(__FILE__)
 
 cmds_watch = [
   %Q!ifconfig | grep mon!,
+  %Q!lsusb | grep U-Blox!,
   #%Q!ls -hltR #{ENV['HOME']}/gits/piloto/log | grep -v ^d | head -n 5!,
   %Q!find #{ENV['HOME']}/gits/piloto/log -type f -printf "%CY%Cm%Cd %CH:%CM %f %s\\n" | sort -dr | head -n 4!,
   %Q!tail -n 1 #{dir_scripts}/../log/wpa_roam.log!,
@@ -37,7 +38,7 @@ cmds_watch = [
   %Q!tail -n 1 $(ls -t #{dir_scripts}/../log/btoothlog/*.log | head -n 1)!,
   %Q!ps aux | sort -nrk 3,3 | tr -d '<' | head -n 4!,
   %Q!df -h /!,
-  %Q!echo "$(grep -v handshake #{dir_scripts}/../log/besside.log 2>/dev/null | tail -n 1 | tr -d '[[:space:]]') $(wc -l #{dir_scripts}/../log/besside.log | awk '{print $1;}')"!,
+  #%Q!echo "$(grep -v handshake #{dir_scripts}/../log/besside.log 2>/dev/null | tail -n 1 | tr -d '[[:space:]]') $(wc -l #{dir_scripts}/../log/besside.log | awk '{print $1;}')"!,
 ]
   # curl "localhost:2497?POLL=enable:true" # this hangs if no fix
   #%Q!top -n 1 | head -n 10!,

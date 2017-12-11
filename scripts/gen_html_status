@@ -19,6 +19,13 @@ cmds_connect.each do |c|
   if $?.success?
     background_color = '#c0ffc0'
   end
+
+  # check for gps device
+
+  unless output =~ /U\-Blox/
+    background_color = 'yellow'
+  end
+
   html_status += %Q(<pre style="background-color: #{background_color}">)
   unless $?.success?
     html_status += "#{c}\n\n"

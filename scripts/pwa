@@ -5,6 +5,7 @@
 # - output json if possible
 require 'bundler/setup'
 require 'getoptlong'
+require 'json'
 require 'lolcat'
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'piloto'
@@ -12,16 +13,20 @@ require 'piloto'
 opts = GetoptLong.new(
   ['--color', '-c', GetoptLong::NO_ARGUMENT],
   ['--delay', '-d', GetoptLong::OPTIONAL_ARGUMENT],
+  ['--json', '-j', GetoptLong::NO_ARGUMENT],
 )
 
 delay = false
 color = false
+json = false
 opts.each do |opt, arg|
   case opt
     when '--color'
       color = true
     when '--delay'
       delay = arg.to_i
+    when '--json'
+      json = true
   end
 end
 
@@ -43,6 +48,7 @@ cmds_watch = [
   # curl "localhost:2497?POLL=enable:true" # this hangs if no fix
   #%Q!top -n 1 | head -n 10!,
 
+output_structured = {}
 runonce = true 
 until !runonce
   temp_f = Piloto.cpu_temp
@@ -53,19 +59,29 @@ until !runonce
     :spread => 3.0,
   }
   header = "[#{Time.now} #{temp_f}F #{`uptime -p`.chomp}] #{Wpa.list_ssid_current.ssid}"
-  if color
+  if json
+    output_structured['header'] = header
+  elsif color
     Lol.println header, {}, opts_lolcat
   else
     puts header
   end
-  cmds_watch.each do |c|
-    opts_lolcat[:os] = rand(256)
-    `#{c}`.chomp.split("\n").each do |line|
-      opts_lolcat[:os] += 1
-      if color
-        Lol.println line, {}, opts_lolcat
-      else
-        puts line
+  if json
+    output_structured["commands"] = {} 
+    cmds_watch.each do |c|
+      output_structured['commands'][c] = `#{c}`.chomp
+    end
+    puts output_structured.to_json
+  else
+    cmds_watch.each do |c|
+      opts_lolcat[:os] = rand(256)
+      `#{c}`.chomp.split("\n").each do |line|
+        opts_lolcat[:os] += 1
+        if color
+          Lol.println line, {}, opts_lolcat
+        else
+          puts line
+        end
       end
     end
   end

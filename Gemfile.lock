@@ -44,7 +44,7 @@ GEM
     geocluster (0.1.1)
       geocoder
       pr_geohash
-    geocoder (1.4.5)
+    geocoder (1.6.4)
     gpsd_client (0.0.5)
     guard (2.14.1)
       formatador (>= 0.2.4)

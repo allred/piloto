@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd ~/m/rp3-piloto-1 && rsync --timeout 60 -arvz -e "ssh -o StrictHostKeyChecking=no -p 2222" pi@localhost:gits/piloto/log .
-cd ~/m/rp2-piloto-1 && rsync --timeout 60 -arvz -e "ssh -o StrictHostKeyChecking=no -p 2222" pi@localhost:gits/piloto/log .
+cd ~/m/rp2-piloto-1 && rsync --timeout 60 -arvz -e "ssh -o StrictHostKeyChecking=no -p 2221" pi@localhost:gits/piloto/log .
 cd ~/m/rp3-piloto-2 && rsync --timeout 60 -arvz -e "ssh -o StrictHostKeyChecking=no -p 2224" pi@localhost:gits/piloto/log .

@@ -13,6 +13,7 @@
 ** libnl-3-dev
 ** libnl-gen1-3-dev
 ** libpcap-dev
+** libpq-dev
 ** libssl-dev
 ** tcpdump
 * clone aircrack-ng from github

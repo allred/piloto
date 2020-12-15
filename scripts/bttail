@@ -1,5 +1,11 @@
 #!/bin/bash
-tail $* ~/gits/piloto/log/btoothlog/*log 2>/dev/null
-cd ~/m/rp2-piloto-1/log/btoothlog
-file=$(ls -tr|tail -1)
-tail $* -n 50 $file
+if [[ $(hostname) -eq "rp2-piloto-1" ]]
+then
+  cd ~/gits/piloto/log/btoothlog
+  file=$(ls -tr|tail -1)
+  tail $* -n 50 $file 
+else
+  cd ~/m/rp2-piloto-1/log/btoothlog
+  file=$(ls -tr|tail -1)
+  tail $* -n 50 $file
+fi

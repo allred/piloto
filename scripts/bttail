@@ -1,3 +1,5 @@
 #!/bin/bash
-tail -f ~/gits/piloto/log/btoothlog/*log
-tail -f ~/m/rp2-piloto-1/log/btoothlog/*log
+tail $* ~/gits/piloto/log/btoothlog/*log 2>/dev/null
+cd ~/m/rp2-piloto-1/log/btoothlog
+file=$(ls -tr|tail -1)
+tail $* -n 50 $file

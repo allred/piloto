@@ -1,0 +1,2 @@
+#!/bin/bash
+mosquitto_pub -h broker.hivemq.com -t allred/rp2-piloto-1 -m "hello there"

@@ -1,0 +1,13 @@
+#!/bin/bash
+# since bash version 4 you can use |& as an abbreviation for 2>&1 |
+broker="broker.hivemq.com"
+topic="allred/rp2-piloto-1"
+dir_log="$HOME/gits/piloto/log/btoothlog"
+#dir_log="$HOME/tmp"
+send_lines_initial=1
+
+latest_file=$(ls -tr $dir_log | tail -1)
+#tail -n 1 -f $dir_log/$latest_file | mosquitto_pub -h $broker -t $topic -l
+#tail -n 1 -f $dir_log/$latest_file > >(mosquitto_pub -h $broker -t $topic -l) 2> >(tee -a stderr.log 2>&1)
+tail -n $send_lines_initial -f $dir_log/$latest_file | tee >(mosquitto_pub -d -h $broker -t $topic -l)
+

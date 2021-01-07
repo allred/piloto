@@ -38,6 +38,8 @@ GEM
     ffi (1.13.1)
     ffi-yajl (2.3.1)
       libyajl2 (~> 1.2)
+    file-tail (1.2.0)
+      tins (~> 1.0)
     fivemat (1.3.5)
     formatador (0.2.5)
     fuzzyurl (0.9.0)
@@ -89,6 +91,7 @@ GEM
     mixlib-config (2.2.4)
     mixlib-log (1.7.1)
     mixlib-shellout (2.3.2)
+    mqtt (0.5.0)
     nenv (0.3.0)
     netrc (0.11.0)
     nokogiri (1.10.10)
@@ -135,9 +138,12 @@ GEM
       builder
       nokogiri
     shellany (0.0.1)
+    sync (0.5.0)
     systemu (2.6.5)
     thor (0.20.0)
     thread_safe (0.3.6)
+    tins (1.26.0)
+      sync
     trollop (2.1.2)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
@@ -156,6 +162,7 @@ DEPENDENCIES
   aws-sdk (~> 2)
   byebug
   concurrent-ruby
+  file-tail
   fivemat
   geocluster
   gpsd_client
@@ -164,6 +171,7 @@ DEPENDENCIES
   lolcat
   minitest
   minitest-reporters
+  mqtt
   ohai
   packetfu
   pcaprub

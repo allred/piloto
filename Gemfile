@@ -2,8 +2,11 @@ source 'https://rubygems.org'
 
 gem 'activesupport', '>= 5.2.4.3'
 gem 'concurrent-ruby', require: 'concurrent'
+gem 'file-tail'
 gem 'gpsd_client'
+gem 'guard'
 gem 'lolcat'
+gem 'mqtt'
 gem 'ohai'
 gem 'packetfu'
 gem 'pcaprub'
@@ -14,7 +17,6 @@ gem 'wpa_cli_ruby'
 
 group :development do
   gem 'byebug'
-  gem 'guard'
   gem 'guard-minitest'
   gem 'ruby-prof'
 end

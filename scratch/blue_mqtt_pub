@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'bundler/setup'
+require 'rb-inotify'
+
+@dir_watch = "#{ENV['HOME']}/gits/piloto/log/btoothlog"
+#@dir_watch = "#{ENV['HOME']}/tmp"
+
+def latest_file
+  latest_file = Dir.glob("#{@dir_watch}/*.log").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
+  return latest_file[-1]
+end
+
+def mqtt_pub(msg)
+  cmd = "mosquitto_pub -h broker.hivemq.com -t allred/rp2-piloto-1 -m '#{msg}'"
+  system(cmd)
+  return cmd
+end
+
+n = INotify::Notifier.new
+@latest_file = latest_file()
+p "watching #{@latest_file} ..."
+n.watch(@latest_file, :modify) do |event|
+  line_new = `tail -1 #{@latest_file}`.chomp
+  r = mqtt_pub(line_new)
+  p r
+end
+n.run
+

@@ -1,2 +1,2 @@
 #!/bin/bash
-mosquitto_pub -h broker.hivemq.com -t allred/rp2-piloto-1 -m "hello there"
+mosquitto_pub -d -h broker.hivemq.com -t allred/rp2-piloto-1 -m "$0 $(date)"

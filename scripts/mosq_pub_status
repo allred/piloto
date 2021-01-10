@@ -26,11 +26,12 @@ end
 def gen_hash_status()
   cmd_bluelog = %Q!tail -n 1 $(ls -t #{@dir_scripts}/../log/btoothlog/*.log | head -n 1)!
   cmd_geo = %Q!tail -n 1 $(ls -t #{@dir_scripts}/../log/geolocator/*.log | head -n 1)!
+  out_geo = JSON.parse(`#{cmd_geo}`.chomp)
   cmd_ps = %Q!ps aux | sort -nrk 3,3 | tr -d '<' | head -n 4!
   ohash = {
     :hostname => `hostname`.chomp,
     :bluelog => `#{cmd_bluelog}`.chomp,
-    :geolocator => `#{cmd_geo}`.chomp,
+    :geolocator => out_geo,
     :t_uptime => `uptime -p`.chomp,
   }
   return ohash 

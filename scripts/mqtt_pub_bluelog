@@ -6,7 +6,7 @@ require 'mqtt'
 
 @dir_watch = "#{ENV['HOME']}/gits/piloto/log/btoothlog"
 #@dir_watch = "#{ENV['HOME']}/tmp"
-@tail_backward = 1
+@tail_backward = 0
 
 def latest_file
   latest_file = Dir.glob("#{@dir_watch}/*.log").sort { |a,b| File.mtime(a) <=> File.mtime(b) }
@@ -19,7 +19,9 @@ def mqtt_pub(msg)
   return cmd
 end
 
-File.open(latest_file()) do |log|
+latest_file = latest_file()
+puts "watching #{latest_file}"
+File.open(latest_file) do |log|
   log.extend(File::Tail)
   log.backward(@tail_backward)
   log.tail do |line|

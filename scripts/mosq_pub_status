@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'json'
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'piloto'
+
+brokers = [
+  {
+    host: "broker.hivemq.com",
+    topic: "allred/rp2-piloto-1",
+  },
+  {
+    host: "test.mosquitto.org",
+    topic: "allred/rp2-piloto-1",
+  },
+]
+@dir_scripts = File.expand_path File.dirname(__FILE__)
+
+
+def mqtt_send(broker, topic, message)
+  cmd = %Q(mosquitto_pub -d -h #{broker} -t #{topic} -m '#{message}')
+  puts [:d => cmd]
+  system(cmd)
+end
+
+def gen_hash_status()
+  cmd_bluelog = %Q!tail -n 1 $(ls -t #{@dir_scripts}/../log/btoothlog/*.log | head -n 1)!
+  cmd_geo = %Q!tail -n 1 $(ls -t #{@dir_scripts}/../log/geolocator/*.log | head -n 1)!
+  cmd_ps = %Q!ps aux | sort -nrk 3,3 | tr -d '<' | head -n 4!
+  ohash = {
+    :hostname => `hostname`.chomp,
+    :bluelog => `#{cmd_bluelog}`.chomp,
+    :geolocator => `#{cmd_geo}`.chomp,
+    :t_uptime => `uptime -p`.chomp,
+  }
+  return ohash 
+end
+
+
+brokers.each do |b|
+  out_hash = gen_hash_status()
+  out_hash[:broker] = b[:host] 
+  out_hash[:t_gen] = Time.now.to_s 
+
+  out_json = out_hash.to_json
+  mqtt_send(b[:host], b[:topic], out_json)
+end

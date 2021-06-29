@@ -1,2 +1,4 @@
 #!/bin/bash
-mosquitto_sub -h broker.hivemq.com -t allred/rp2-piloto-1
+broker="broker.hivemq.com"
+topic="allred/meta"
+mosquitto_sub -h $broker -t $topic 

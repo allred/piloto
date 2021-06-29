@@ -26,6 +26,6 @@ File.open(latest_file) do |log|
   log.backward(@tail_backward)
   log.tail do |line|
     puts "publishing: #{line}"
-    mqtt_pub("bluelog: #{line}")
+    mqtt_pub("bluelog,#{line}".chomp())
   end
 end

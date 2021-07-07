@@ -14,7 +14,7 @@ def latest_file
 end
 
 def mqtt_pub(msg)
-  cmd = "mosquitto_pub -h broker.hivemq.com -t allred/rp2-piloto-1 -m '#{msg}'"
+  cmd = "mosquitto_pub -h broker.hivemq.com -t allred/meta -m '#{msg}'"
   system(cmd)
   return cmd
 end

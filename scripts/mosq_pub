@@ -3,8 +3,10 @@ broker="broker.hivemq.com"
 #topic="allred/rp2-piloto-1"
 topic="allred/meta"
 
-msg="$0,$(date),$*"
-echo "$msg"
-mosquitto_pub -d -h $broker -t $topic -m "$msg"
+#msg="$0,$(date),$*"
+#echo "$msg"
+cmd="mosquitto_pub -d -h $broker -t $topic -m \"$*\""
+echo $cmd
+$cmd
 # redis redis-10827.c8.us-east-1-4.ec2.cloud.redislabs.com:10827
 

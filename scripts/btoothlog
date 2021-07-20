@@ -9,7 +9,7 @@ Dir.mkdir dir_logs unless Dir.exist? dir_logs
 
 Dir.chdir(dir_logs)
 cmd = <<-eoc
-  bluelog -tn
+  bluelog -i hci1 -tn
 eoc
 sleep(30 + rand(20))
 system cmd

@@ -17,6 +17,7 @@
 ** libssl-dev
 ** tcpdump
 * clone aircrack-ng from github
+** ./configure --with-experimental=true
 ** sudo make experimental=true install
 * setup rvm, bundler
 * drop in your priv key for the atun autossh tunnel 
